@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:padding="16dp"
+        android:weightSum="10"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/img_food_image"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:scaleType="fitXY"/>
+
+        <LinearLayout
+            android:layout_marginLeft="8dp"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txt_order_number"
+                android:text="26/11/2019 13:05:00"
+                android:fontFamily="@font/brandon_medium"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:textColor="@android:color/holo_blue_light"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/txt_order_date"
+                android:text="Today at 13:05:56 pm"
+                android:fontFamily="@font/brandon_medium"
+                android:textSize="16sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/txt_time"
+                android:text="Order Date :"
+                android:fontFamily="@font/brandon_medium"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/txt_name"
+                android:text="Name: Darshil"
+                android:fontFamily="@font/brandon_medium"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+            android:id="@+id/txt_order_status"
+            android:text="Status: Placed"
+            android:fontFamily="@font/brandon_medium"
+            android:textSize="16sp"
+            android:textStyle="italic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/txt_num_item"
+                android:text="Num of items: 10"
+                android:fontFamily="@font/brandon_medium"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
