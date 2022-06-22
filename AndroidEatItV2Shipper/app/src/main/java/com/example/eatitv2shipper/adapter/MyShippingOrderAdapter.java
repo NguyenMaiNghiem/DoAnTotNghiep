@@ -1,6 +1,7 @@
 package com.example.eatitv2shipper.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.eatitv2shipper.R;
+import com.example.eatitv2shipper.ShippingActivity;
 import com.example.eatitv2shipper.common.Common;
 import com.example.eatitv2shipper.model.ShippingOrderModel;
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -23,6 +26,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.paperdb.Paper;
 
 public class MyShippingOrderAdapter extends RecyclerView.Adapter<MyShippingOrderAdapter.MyViewHolder> {
 
@@ -62,6 +66,14 @@ public class MyShippingOrderAdapter extends RecyclerView.Adapter<MyShippingOrder
         {
             holder.btn_ship_now.setEnabled(false);
         }
+
+        //Event
+        holder.btn_ship_now.setOnClickListener(v -> {
+            Paper.book().write(Common.SHIPPER_ORDER_DATA,new Gson().toJson(shippingOrderModelList.get(position)));
+
+            Intent intent = new Intent(context, ShippingActivity.class);
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -94,5 +106,6 @@ public class MyShippingOrderAdapter extends RecyclerView.Adapter<MyShippingOrder
         this.context = context;
         this.shippingOrderModelList = shippingOrderModelList;
         this.simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        Paper.init(context);
     }
 }

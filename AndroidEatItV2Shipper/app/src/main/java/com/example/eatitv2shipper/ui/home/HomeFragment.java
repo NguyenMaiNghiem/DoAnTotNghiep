@@ -2,7 +2,6 @@ package com.example.eatitv2shipper.ui.home;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +45,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         recycler_order = binding.recyclerOder;
+
         homeViewModel.getMessageError().observe(this,s -> {
             Toast.makeText(getContext(),s , Toast.LENGTH_LONG).show();
         });
@@ -61,12 +61,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initViews(View root) {
-        ShippingOrderModel shippingOrderModel = new ShippingOrderModel();
         homeViewModel.loadOrderByShipper(Common.currentShipperUser.getPhone());
-        Toast.makeText(getContext(),"adsadsadsadadsa" , Toast.LENGTH_LONG).show();
-        Log.i("data",""+shippingOrderModel.toString());
-
-
 
         recycler_order.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());

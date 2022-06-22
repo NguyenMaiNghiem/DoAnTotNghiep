@@ -76,6 +76,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textColor="@color/white"
+            android:backgroundTint="@color/blue500"
+            android:layout_marginTop="5dp"
             android:text="Ship Now" />
 
     </LinearLayout>
