@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.eatitv2server">
+    package="com.nghiem.rilleyServer">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -20,9 +20,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
-
-
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -38,18 +35,16 @@
 
 
         <activity
-            android:name="com.example.eatitv2server.TrackingOrderActivity"
+            android:name="com.nghiem.rilleyServer.TrackingOrderActivity"
             android:label="@string/title_activity_tracking_order" />
 
-
-        <activity android:name="com.example.eatitv2server.SizeAddonEditActivity" />
-
+        <activity android:name="com.nghiem.rilleyServer.SizeAddonEditActivity" />
 
         <activity
-            android:name="com.example.eatitv2server.HomeActivity"
+            android:name="com.nghiem.rilleyServer.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.example.eatitv2server.MainActivity">
+        <activity android:name="com.nghiem.rilleyServer.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -57,7 +52,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.example.eatitv2server.services.MyFCMServices">
+        <service android:name="com.nghiem.rilleyServer.services.MyFCMServices">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

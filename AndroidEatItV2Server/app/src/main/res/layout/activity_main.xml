@@ -4,25 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="com.nghiem.rilleyServer.MainActivity">
 
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/nblogo"
+        app:srcCompat="@drawable/anhdaidien"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        tools:layout_editor_absoluteY="0dp"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="SERVER "
-        android:textColor="@android:color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="35dp"
+        android:text="@string/app_admin"
+        android:textColor="@color/blue500"
         android:textSize="30sp"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="619dp" />
+        android:textStyle="bold"
+        android:fontFamily="@font/brandon_medium"
+        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

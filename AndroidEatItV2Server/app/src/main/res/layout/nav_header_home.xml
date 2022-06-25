@@ -12,16 +12,49 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/nav_header_desc"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            app:srcCompat="@drawable/anhdaidien"
+            android:scaleType="fitCenter"/>
+
+        <TextView
+            android:id="@+id/txt_user"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:fontFamily="@font/brandon_medium"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:gravity="center_vertical"
+            android:text="Hey U"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+    </LinearLayout>
+
     <TextView
-        android:id="@+id/txt_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:fontFamily="@font/brandon_medium"
-        android:textSize="20sp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/white"
         android:text="@string/nav_header_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="@string/nav_header_subtitle" />
 
 </LinearLayout>

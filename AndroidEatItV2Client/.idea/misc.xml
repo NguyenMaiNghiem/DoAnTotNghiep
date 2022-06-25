@@ -38,6 +38,20 @@
         <entry key="..\:/AndroidEatItV2/AndroidEatItV2Client/app/src/main/res/menu/cart_menu.xml" value="0.346875" />
         <entry key="..\:/AndroidEatItV2/AndroidEatItV2Client/app/src/main/res/menu/home.xml" value="0.346875" />
         <entry key="..\:/AndroidEatItV2/AndroidEatItV2Client/app/src/main/res/menu/search_menu.xml" value="0.346875" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/drawable/ic_launcher_background.xml" value="0.157" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/drawable/ic_markunread_black_24dp.xml" value="0.1025" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/drawable/side_nav_bar.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/activity_home.xml" value="0.23229166666666667" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/activity_main.xml" value="0.23229166666666667" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/activity_tracking_order.xml" value="0.23229166666666667" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/app_bar_home.xml" value="0.10358565737051793" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/content_home.xml" value="0.10358565737051793" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/fragment_home.xml" value="0.2296875" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_register.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/nav_header_home.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
       </map>
     </option>
   </component>

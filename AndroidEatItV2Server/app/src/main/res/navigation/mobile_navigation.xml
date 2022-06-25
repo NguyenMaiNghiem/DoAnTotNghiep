@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/nav_category"
-        android:name="com.example.eatitv2server.ui.category.CategoryFragment"
+        android:name="com.nghiem.rilleyServer.ui.category.CategoryFragment"
         android:label="@string/menu_category"
         tools:layout="@layout/fragment_category" />
 
     <fragment
         android:id="@+id/nav_food_list"
-        android:name="com.example.eatitv2server.ui.food_list.FoodListFragment"
+        android:name="com.nghiem.rilleyServer.ui.food_list.FoodListFragment"
         android:label="@string/menu_food_list"
         tools:layout="@layout/fragment_food_list">
 
@@ -28,7 +28,7 @@
 
     <fragment
         android:id="@+id/nav_order"
-        android:name="com.example.eatitv2server.ui.order.OrderFragment"
+        android:name="com.nghiem.rilleyServer.ui.order.OrderFragment"
         android:label="@string/menu_order"
         tools:layout="@layout/fragment_order">
 
@@ -42,7 +42,7 @@
 
     <fragment
         android:id="@+id/nav_shipper"
-        android:name="com.example.eatitv2server.ui.shipper.ShipperFragment"
+        android:name="com.nghiem.rilleyServer.ui.shipper.ShipperFragment"
         android:label="@string/menu_shipper"
         tools:layout="@layout/fragment_shipper">
 
@@ -56,7 +56,7 @@
 
     <fragment
         android:id="@+id/nav_best_deals"
-        android:name="com.example.eatitv2server.ui.best_deals.BestDealsFragment"
+        android:name="com.nghiem.rilleyServer.ui.best_deals.BestDealsFragment"
         android:label="@string/menu_best_deals"
         tools:layout="@layout/best_deals_fragment">
 
@@ -70,7 +70,7 @@
 
     <fragment
         android:id="@+id/nav_most_popular"
-        android:name="com.example.eatitv2server.ui.most_popular.MostPopularFragment"
+        android:name="com.nghiem.rilleyServer.ui.most_popular.MostPopularFragment"
         android:label="@string/menu_most_popular"
         tools:layout="@layout/most_popular_fragment">
 

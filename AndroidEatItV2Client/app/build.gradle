@@ -5,7 +5,7 @@ android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
     defaultConfig {
-        applicationId "com.example.eatitv2client"
+        applicationId "com.nghiem.rilleyClient"
         minSdkVersion 22
         targetSdkVersion 30
         versionCode 2

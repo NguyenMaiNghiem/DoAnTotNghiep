@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.eatitv2shipper.ui.home.HomeFragment"
+        android:name="com.nghiem.rilleyShipper.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.eatitv2shipper.ui.gallery.GalleryFragment"
+        android:name="com.nghiem.rilleyShipper.ui.gallery.GalleryFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.example.eatitv2shipper.ui.slideshow.SlideshowFragment"
+        android:name="com.nghiem.rilleyShipper.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
 </navigation>

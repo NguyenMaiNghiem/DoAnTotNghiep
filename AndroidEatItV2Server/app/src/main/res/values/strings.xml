@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">RILLEY MILKTEA SERVER</string>
+    <string name="app_name">Rilley Milktea Admin</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">SĐT : 094 420 30 11</string>
+    <string name="nav_header_subtitle">Free ship từ 3 ly trong phạm vi 3Km</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
@@ -23,5 +23,6 @@
     <string name="menu_send">Send</string>
     <string name="title_activity_tracking_order">Map</string>
     <string name="action_create">Add Category</string>
+    <string name="app_admin">App Admin</string>
 
 </resources>

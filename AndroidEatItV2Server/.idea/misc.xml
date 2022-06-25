@@ -3,7 +3,26 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/drawable/ic_restaurant_menu_black_24dp.xml" value="0.1655" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/drawable/side_nav_bar.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/activity_home.xml" value="0.234375" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/activity_main.xml" value="0.22509057971014493" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/activity_tracking_order.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/app_bar_home.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/fragment_category.xml" value="0.234375" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/fragment_shipper.xml" value="0.245018115942029" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/layout_category_item.xml" value="0.25" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/layout_dialog_order_detail.xml" value="0.2151268115942029" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/layout_dialog_shipping.xml" value="0.264" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/layout_order_item.xml" value="0.2151268115942029" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/layout_register.xml" value="0.245018115942029" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/layout_shipper.xml" value="0.245018115942029" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/layout_update_category.xml" value="0.346875" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/layout/nav_header_home.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/mipmap-anydpi-v26/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/mipmap-anydpi-v26/ic_launcher_foreground_round.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Server/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
       </map>
     </option>
   </component>

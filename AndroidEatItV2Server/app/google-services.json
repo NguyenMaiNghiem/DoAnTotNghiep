@@ -1,42 +1,42 @@
 {
   "project_info": {
-    "project_number": "325253258114",
-    "firebase_url": "https://eatit-baff2-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "eatit-baff2",
-    "storage_bucket": "eatit-baff2.appspot.com"
+    "project_number": "800013354777",
+    "firebase_url": "https://trasuarilley-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "trasuarilley",
+    "storage_bucket": "trasuarilley.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:325253258114:android:d69cd8904802fb9c624d9b",
+        "mobilesdk_app_id": "1:800013354777:android:48718802963dd8e2926788",
         "android_client_info": {
-          "package_name": "com.example.eatitv2client"
+          "package_name": "com.nghiem.rilleyServer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "325253258114-91rc6l1fg8glouc3pgao5angbjui1idj.apps.googleusercontent.com",
+          "client_id": "800013354777-sgv15repapp5elsca56qkvg7uskhjjc4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.eatitv2client",
+            "package_name": "com.nghiem.rilleyServer",
             "certificate_hash": "149dc27f54cdb85bd72d30f964e83b0d0799de78"
           }
         },
         {
-          "client_id": "325253258114-7jh2rvl8gaogu2v52suug72295asqnpa.apps.googleusercontent.com",
+          "client_id": "800013354777-i1jtcqm9saib072ndf4f911pi5f0lb22.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDyIqE8U0kalkfcWGVHrsu1Mf8jGek1WvE"
+          "current_key": "AIzaSyChIEsvG_ltyGyM2iqJM1OF33LYVjpr4zA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "325253258114-7jh2rvl8gaogu2v52suug72295asqnpa.apps.googleusercontent.com",
+              "client_id": "800013354777-i1jtcqm9saib072ndf4f911pi5f0lb22.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -45,64 +45,35 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:325253258114:android:196dd1e4808b50fb624d9b",
+        "mobilesdk_app_id": "1:800013354777:android:7690c626359332d0926788",
         "android_client_info": {
-          "package_name": "com.example.eatitv2server"
+          "package_name": "com.nghiem.rilleyShipper"
         }
       },
       "oauth_client": [
         {
-          "client_id": "325253258114-40f322ijoqs0lon8n8gfrmjelkk26uid.apps.googleusercontent.com",
+          "client_id": "800013354777-0331uabkb7v87flsatjngnl5aje0p15f.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.eatitv2server",
+            "package_name": "com.nghiem.rilleyShipper",
             "certificate_hash": "149dc27f54cdb85bd72d30f964e83b0d0799de78"
           }
         },
         {
-          "client_id": "325253258114-7jh2rvl8gaogu2v52suug72295asqnpa.apps.googleusercontent.com",
+          "client_id": "800013354777-i1jtcqm9saib072ndf4f911pi5f0lb22.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDyIqE8U0kalkfcWGVHrsu1Mf8jGek1WvE"
+          "current_key": "AIzaSyChIEsvG_ltyGyM2iqJM1OF33LYVjpr4zA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "325253258114-7jh2rvl8gaogu2v52suug72295asqnpa.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:325253258114:android:085cc0e882fb5fec624d9b",
-        "android_client_info": {
-          "package_name": "com.nbserver.androideatitv2server"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "325253258114-7jh2rvl8gaogu2v52suug72295asqnpa.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDyIqE8U0kalkfcWGVHrsu1Mf8jGek1WvE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "325253258114-7jh2rvl8gaogu2v52suug72295asqnpa.apps.googleusercontent.com",
+              "client_id": "800013354777-i1jtcqm9saib072ndf4f911pi5f0lb22.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

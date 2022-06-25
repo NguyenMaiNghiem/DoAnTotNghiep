@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.eatitv2client">
+    package="com.nghiem.rilleyClient">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -32,13 +32,13 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.eatitv2client.TrackingOrderActivity"
+            android:name="com.nghiem.rilleyClient.TrackingOrderActivity"
             android:label="@string/title_activity_tracking_order"/>
         <activity
-            android:name="com.example.eatitv2client.HomeActivity"
+            android:name="com.nghiem.rilleyClient.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.example.eatitv2client.MainActivity">
+        <activity android:name="com.nghiem.rilleyClient.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,7 +46,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.example.eatitv2client.Services.MyFCMServices">
+        <service android:name="com.nghiem.rilleyClient.Services.MyFCMServices">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
