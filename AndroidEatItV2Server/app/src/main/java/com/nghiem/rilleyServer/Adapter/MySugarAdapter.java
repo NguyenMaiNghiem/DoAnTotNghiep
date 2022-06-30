@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nghiem.rilleyServer.Callback.IRecyclerClickListener;
 import com.nghiem.rilleyServer.EventBus.SelectedAddonModel;
-import com.nghiem.rilleyServer.EventBus.UpdateAddonModel;
-import com.nghiem.rilleyServer.Model.AddonModel;
+import com.nghiem.rilleyServer.EventBus.UpdateSugarModel;
+import com.nghiem.rilleyServer.Model.SugarModel;
 import com.nghiem.rilleyServer.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -24,17 +24,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MyAddonAdapter extends RecyclerView.Adapter<MyAddonAdapter.MyViewHolder> {
+public class MySugarAdapter extends RecyclerView.Adapter<MySugarAdapter.MyViewHolder> {
 
     Context context;
-    List<AddonModel> addonModels;
-    UpdateAddonModel updateAddonModel;
+    List<SugarModel> sugarModels;
+    UpdateSugarModel updateSugarModel;
     int editPos;
 
-    public MyAddonAdapter(Context context, List<AddonModel> addonModels) {
+    public MySugarAdapter(Context context, List<SugarModel> sugarModels) {
         this.context = context;
-        this.addonModels = addonModels;
-        updateAddonModel = new UpdateAddonModel();
+        this.sugarModels = sugarModels;
+        updateSugarModel = new UpdateSugarModel();
         editPos=-1;
     }
 
@@ -47,22 +47,22 @@ public class MyAddonAdapter extends RecyclerView.Adapter<MyAddonAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.txt_name.setText(addonModels.get(position).getName());
-        holder.txt_price.setText(String.valueOf(addonModels.get(position).getPrice()));
+        holder.txt_name.setText(sugarModels.get(position).getName());
+        holder.txt_price.setText(String.valueOf(sugarModels.get(position).getPrice()));
 
         holder.img_delete.setOnClickListener(v -> {
             //Delete Item
-            addonModels.remove(position);
+            sugarModels.remove(position);
             notifyItemRemoved(position);
-            updateAddonModel.setAddonModel(addonModels); // Set for Event
-            EventBus.getDefault().postSticky(updateAddonModel); //Send for Event
+            updateSugarModel.setAddonModel(sugarModels); // Set for Event
+            EventBus.getDefault().postSticky(updateSugarModel); //Send for Event
         });
 
         holder.setListener(new IRecyclerClickListener() {
             @Override
             public void onItemClickListener(View view, int pos) {
                 editPos = position;
-                EventBus.getDefault().postSticky(new SelectedAddonModel(addonModels.get(pos)));
+                EventBus.getDefault().postSticky(new SelectedAddonModel(sugarModels.get(pos)));
             }
         });
 
@@ -71,25 +71,25 @@ public class MyAddonAdapter extends RecyclerView.Adapter<MyAddonAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return addonModels.size();
+        return sugarModels.size();
     }
 
-    public void addNewAddon(AddonModel addonModel) {
-        addonModels.add(addonModel);
-        notifyItemInserted(addonModels.size()-1);
-        updateAddonModel.setAddonModel(addonModels);
-        EventBus.getDefault().postSticky(updateAddonModel);
+    public void addNewAddon(SugarModel sugarModel) {
+        sugarModels.add(sugarModel);
+        notifyItemInserted(sugarModels.size()-1);
+        updateSugarModel.setAddonModel(sugarModels);
+        EventBus.getDefault().postSticky(updateSugarModel);
     }
 
-    public void editAddon(AddonModel addonModel) {
+    public void editAddon(SugarModel sugarModel) {
         if(editPos!=-1)
         {
-            addonModels.set(editPos, addonModel);
+            sugarModels.set(editPos, sugarModel);
             notifyItemChanged(editPos);
             editPos=-1; //Reset variable after success
             //Send update
-            updateAddonModel.setAddonModel(addonModels);
-            EventBus.getDefault().postSticky(updateAddonModel);
+            updateSugarModel.setAddonModel(sugarModels);
+            EventBus.getDefault().postSticky(updateSugarModel);
         }
     }
 

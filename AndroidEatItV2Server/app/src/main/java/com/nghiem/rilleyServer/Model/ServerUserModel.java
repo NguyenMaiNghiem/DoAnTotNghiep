@@ -1,7 +1,7 @@
 package com.nghiem.rilleyServer.Model;
 
 public class ServerUserModel {
-    private String uid, name, phone;
+    private String uid, name, phone, milktea;
     private boolean active;
 
     public ServerUserModel() {
@@ -12,6 +12,14 @@ public class ServerUserModel {
         this.name = name;
         this.phone = phone;
         this.active = active;
+    }
+
+    public String getMilktea() {
+        return milktea;
+    }
+
+    public void setMilktea(String milktea) {
+        this.milktea = milktea;
     }
 
     public String getUid() {
@@ -44,5 +52,16 @@ public class ServerUserModel {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    @Override
+    public String toString() {
+        return "ServerUserModel{" +
+                "uid='" + uid + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", milktea='" + milktea + '\'' +
+                ", active=" + active +
+                '}';
     }
 }

@@ -3,39 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:id="@+id/home_group">
+    <group android:id="@+id/milktea_group">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_milktea"
             android:icon="@drawable/ic_home_black_24dp"
-            android:title="@string/menu_home" />
-    </group>
-
-    <group android:id="@+id/news_group">
-        <item
-            android:id="@+id/nav_news"
-            android:icon="@drawable/ic_markunread_black_24dp"
-            android:title="@string/menu_subscribe_news" />
-    </group>
-
-    <group android:id="@+id/category_group">
-        <item
-            android:id="@+id/nav_menu"
-            android:icon="@drawable/ic_restaurant_menu_black_24dp"
-            android:title="@string/menu_menu" />
-    </group>
-
-    <group android:id="@+id/cart_group">
-        <item
-            android:id="@+id/nav_cart"
-            android:icon="@drawable/ic_shopping_cart_black_24dp"
-            android:title="@string/menu_cart" />
-    </group>
-
-    <group android:id="@+id/view_orders_group">
-        <item
-            android:id="@+id/nav_view_orders"
-            android:icon="@drawable/ic_view_headline_black_24dp"
-            android:title="@string/menu_view_orders" />
+            android:title="@string/menu_milktea" />
     </group>
 
     <group >
@@ -44,8 +16,6 @@
             android:icon="@drawable/ic_update_black_24dp"
             android:title="@string/update_info" />
     </group>
-
-
 
     <group android:id="@+id/user_group">
         <item

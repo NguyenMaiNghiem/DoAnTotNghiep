@@ -160,7 +160,9 @@ public class CategoryFragment extends Fragment {
 
     private void deleteCategory() {
         FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.CATEGORY_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.CATEGORY_REF)
                 .child(Common.categorySelected.getMenu_id())
                 .removeValue()
                 .addOnFailureListener(e -> {
@@ -270,7 +272,9 @@ public class CategoryFragment extends Fragment {
 
     private void updateCategory(Map<String, Object> updateData) {
         FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.CATEGORY_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.CATEGORY_REF)
                 .child(Common.categorySelected.getMenu_id())
                 .updateChildren(updateData)
                 .addOnFailureListener(e -> {
@@ -346,7 +350,7 @@ public class CategoryFragment extends Fragment {
                         .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                                //Don't Worry about this Erro
+                                //Don't Worry about this Error
                                 double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
                                 dialog.setMessage(new StringBuilder("Uploading: ").append(progress).append("%"));
 
@@ -365,7 +369,9 @@ public class CategoryFragment extends Fragment {
 
     private void addCategory(CategoryModel categoryModel) {
         FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.CATEGORY_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.CATEGORY_REF)
                 .push()
                 .setValue(categoryModel)
                 .addOnFailureListener(e -> {

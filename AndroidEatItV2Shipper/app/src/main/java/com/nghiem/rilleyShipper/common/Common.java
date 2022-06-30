@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.os.Build;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 
 import com.nghiem.rilleyShipper.R;
+import com.nghiem.rilleyShipper.model.MilkTeaModel;
 import com.nghiem.rilleyShipper.model.ShipperUserModel;
 import com.nghiem.rilleyShipper.model.TokenModel;
 import com.google.android.gms.maps.model.LatLng;
@@ -41,11 +43,14 @@ public class Common {
     public static final String IS_OPEN_ACTIVITY_NEW_ORDER = "IsOpenActivityNewOrder";
     public static final String SHIPPER_ORDER_DATA = "ShippingData";
     public static final String TRIP_START = "Trip";
+    public static final String MILKTEA_REF = "Milktea";
+    public static final String MILKTEA_SAVE = "MILKTEA_SAVE";
 
     public static ShipperUserModel currentShipperUser;
 
     public static final int DEFAULT_COLUMN_COUNT = 0;
     public static final int FULL_WIDTH_COLUMN = 1;
+    public static MilkTeaModel currentMilktea;
 
     public static void setSpanString(String welcome, String name, TextView textView) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -180,5 +185,13 @@ public class Common {
             poly.add(p);
         }
         return poly;
+    }
+
+    public static String buildLocationString(Location location) {
+        return new StringBuilder()
+                .append(location.getLatitude())
+                .append(",")
+                .append(location.getLongitude())
+                .toString();
     }
 }

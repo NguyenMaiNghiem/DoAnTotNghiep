@@ -7,13 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
-
-import com.nghiem.rilleyShipper.R;
+import com.google.gson.Gson;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +23,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import dmax.dialog.SpotsDialog;
+import io.paperdb.Paper;
+import com.google.gson.reflect.TypeToken;
+
 import com.nghiem.rilleyShipper.common.Common;
+import com.nghiem.rilleyShipper.model.MilkTeaModel;
 import com.nghiem.rilleyShipper.model.ShipperUserModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         init();
 
         //Delete data offline
@@ -64,9 +64,12 @@ public class MainActivity extends AppCompatActivity {
 //        Paper.book().delete(Common.SHIPPING_ORDER_DATA);
     }
     private void init() {
-        providers = Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build(),new AuthUI.IdpConfig.EmailBuilder().build());
 
-        serverRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.SHIPPER_REF);
+        providers = Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build()
+                ,new AuthUI.IdpConfig.EmailBuilder().build());
+
+        serverRef = FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.SHIPPER_REF);
         firebaseAuth = FirebaseAuth.getInstance();
         dialog = new SpotsDialog.Builder().setContext(this).setCancelable(false).build();
         listener = firebaseAuthLocal -> {
@@ -74,18 +77,17 @@ public class MainActivity extends AppCompatActivity {
             FirebaseUser user = firebaseAuthLocal.getCurrentUser();
             if(user != null)
             {
-                checkServerUserFromFirebase(user);
-//                Paper.init(this);
-//                String jsonEncode = Paper.book().read(Common.RESTAURANT_SAVE);
-//                RestaurantModel restaurantModel = new Gson().fromJson(jsonEncode,
-//                        new TypeToken<RestaurantModel>(){}.getType());
-//                if(restaurantModel != null) // If already save, just go to
-//                    checkServerUserFromFirebase(user,restaurantModel); // Copy from RestaurantListActivity
-//                else
-//                {
-//                    startActivity(new Intent(MainActivity.this,RestaurantListActivity.class));
-//                    finish();
-//                }
+                Paper.init(this);
+                String jsonEncode = Paper.book().read(Common.MILKTEA_SAVE);
+                MilkTeaModel milkteaModel = new Gson().fromJson(jsonEncode,
+                        new TypeToken<MilkTeaModel>(){}.getType());
+                if(milkteaModel != null) // If already save, just go to
+                    checkServerUserFromFirebase(user,milkteaModel); // Copy from RestaurantListActivity
+                else
+                {
+                    startActivity(new Intent(MainActivity.this,MilkTeaActivity.class));
+                    finish();
+                }
             }
             else
             {
@@ -94,134 +96,43 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-//    private void checkServerUserFromFirebase(FirebaseUser user, RestaurantModel restaurantModel) {
-//        dialog.show();
-//
-//        serverRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.RESTAURANT_REF)
-//                .child(restaurantModel.getUid())
-//                .child(Common.SHIPPER_REF);
-//        serverRef.child(user.getUid())
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        if(dataSnapshot.exists())
-//                        {
-//                            ShipperUserModel userModel = dataSnapshot.getValue(ShipperUserModel.class);
-//                            if(userModel.isActive())
-//                            {
-//                                goToHomeActivity(userModel,restaurantModel);
-//                            }
-//                            else
-//                            {
-//                                dialog.dismiss();
-//                                Toast.makeText(MainActivity.this, "You must be allowed from Server app", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-//    }
-
-    private void checkServerUserFromFirebase(FirebaseUser user) {
+    private void checkServerUserFromFirebase(FirebaseUser user, MilkTeaModel milkTeaModel) {
         dialog.show();
 
-//        serverRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.RESTAURANT_REF)
-//                .child(restaurantModel.getUid())
-//                .child(Common.SHIPPER_REF);
+        serverRef = FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.MILKTEA_REF)
+                .child(milkTeaModel.getUid())
+                .child(Common.SHIPPER_REF);
         serverRef.child(user.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists())
+                        if (dataSnapshot.exists())
                         {
                             ShipperUserModel userModel = dataSnapshot.getValue(ShipperUserModel.class);
-                            if(userModel.isActive())
+                            if (userModel.isActive())
                             {
-                                goToHomeActivity(userModel);
+                                gotoHomeActivity(userModel,milkTeaModel);
                             }
                             else
                             {
                                 dialog.dismiss();
-                                Toast.makeText(MainActivity.this, "You must be allowed from Server app", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Bạn cần được chấp nhận từ Admin", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                        else {
-                            //Ask for Registration in case User Record does not exist
-                            dialog.dismiss();
-                            showRegisterDialog(user);
                         }
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError error) {
 
                     }
                 });
     }
 
-    private void showRegisterDialog(FirebaseUser user) {
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-        builder.setTitle("Register");
-        builder.setMessage("Please fill information \nAdmin will accept your account late");
-
-        View itemView = LayoutInflater.from(this).inflate(R.layout.layout_register, null);
-        EditText edt_name = (EditText) itemView.findViewById(R.id.edt_name);
-        EditText edt_phone = (EditText) itemView.findViewById(R.id.edt_phone);
-
-        //Set
-        edt_phone.setText(user.getPhoneNumber());
-
-
-        builder.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
-        builder.setPositiveButton("REGISTER", (dialog, which) -> {
-            if (TextUtils.isEmpty(edt_name.getText().toString())) {
-                Toast.makeText(MainActivity.this, "Please enter your name", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            ShipperUserModel shipperUserModel = new ShipperUserModel();
-            shipperUserModel.setUid(user.getUid());
-            shipperUserModel.setName(edt_name.getText().toString());
-            shipperUserModel.setPhone(edt_phone.getText().toString());
-            shipperUserModel.setActive(false); //Default false, We must activate user manual in Firebase
-
-
-            serverRef.child(shipperUserModel.getUid())
-                    .setValue(shipperUserModel)
-                    .addOnFailureListener(e -> {
-                        dialog.dismiss();
-                        Toast.makeText(MainActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnCompleteListener(task -> {
-                        Toast.makeText(MainActivity.this, "Congratulation! Register Success! Admin will check and active you soon", Toast.LENGTH_SHORT).show();
-//                                goToHomeActivity(shipperUserModel);
-
-                    });
-        });
-
-        builder.setView(itemView);
-
-        //Show Dialog
-        androidx.appcompat.app.AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-//    private void goToHomeActivity(ShipperUserModel userModel,RestaurantModel restaurantModel) {
-//        dialog.dismiss();
-//        Common.currentRestaurant = restaurantModel; // Fix crash
-//        Common.currentShipperUser = userModel; // Important, if you don't do this line, when you access Common.currentShipperUser, this is null
-//        startActivity(new Intent(this,HomeActivity.class));
-//        finish();
-//    }
-
-    private void goToHomeActivity(ShipperUserModel userModel) {
+    private void gotoHomeActivity(ShipperUserModel userModel, MilkTeaModel milkTeaModel) {
         dialog.dismiss();
-        Common.currentShipperUser = userModel; // Important, if you don't do this line, when you access Common.currentShipperUser, this is null
+        Common.currentMilktea = milkTeaModel; // Fix crash
+        Common.currentShipperUser = userModel;  //Important , If you don't do this line, when u access Common.currentShipperUser,this is null
         startActivity(new Intent(this,HomeActivity.class));
         finish();
     }
@@ -229,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
     private void phoneLogin() {
         startActivityForResult(AuthUI.getInstance()
                 .createSignInIntentBuilder()
+                .setLogo(R.drawable.anhdaidien)
+                .setTheme(R.style.LoginTheme)
                 .setAvailableProviders(providers)
                 .build()
                 ,APP_REQUEST_CODE);

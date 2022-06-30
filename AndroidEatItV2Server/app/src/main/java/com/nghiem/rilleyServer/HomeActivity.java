@@ -1,43 +1,49 @@
 package com.nghiem.rilleyServer;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-
-import com.nghiem.rilleyServer.Adapter.PdfDocumentAdapter;
-import com.nghiem.rilleyServer.Common.Common;
-import com.nghiem.rilleyServer.Common.PDFUtils;
-import com.nghiem.rilleyServer.EventBus.CategoryClick;
-import com.nghiem.rilleyServer.EventBus.ChangeMenuClick;
-import com.nghiem.rilleyServer.EventBus.PrintOrderEvent;
-import com.nghiem.rilleyServer.EventBus.ToastEvent;
-import com.nghiem.rilleyServer.Model.FCMSendData;
-import com.nghiem.rilleyServer.Model.OrderModel;
-import com.nghiem.rilleyServer.remote.IFCMService;
-import com.nghiem.rilleyServer.remote.RetrofitFCMClient;
-import com.google.android.gms.tasks.OnSuccessListener;
-
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.andremion.counterfab.CounterFab;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.CancellationToken;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -51,18 +57,24 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
-
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.Menu;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Toast;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
+import com.nghiem.rilleyServer.Adapter.PdfDocumentAdapter;
+import com.nghiem.rilleyServer.Common.Common;
+import com.nghiem.rilleyServer.Common.PDFUtils;
+import com.nghiem.rilleyServer.EventBus.CategoryClick;
+import com.nghiem.rilleyServer.EventBus.ChangeMenuClick;
+import com.nghiem.rilleyServer.EventBus.PrintOrderEvent;
+import com.nghiem.rilleyServer.EventBus.ToastEvent;
+import com.nghiem.rilleyServer.Model.FCMSendData;
+import com.nghiem.rilleyServer.Model.MilkteaLocationModel;
+import com.nghiem.rilleyServer.Model.OrderModel;
+import com.nghiem.rilleyServer.remote.IFCMService;
+import com.nghiem.rilleyServer.remote.RetrofitFCMClient;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -77,8 +89,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-
+import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -102,6 +115,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private StorageReference storageReference;
     private AlertDialog dialog;
 
+    @BindView(R.id.fab_chat)
+    CounterFab fab_chat;
+
+    @OnClick(R.id.fab_chat)
+    void onOpenChatList() {
+        startActivity(new Intent(this, ChatListActivity.class));
+    }
 
     @Override
     protected void onStart() {
@@ -127,7 +147,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.bind(this);
 
 
-
         init();
 
 
@@ -147,7 +166,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.bringToFront();
         View headerView = navigationView.getHeaderView(0);
         TextView txt_user = (TextView) headerView.findViewById(R.id.txt_user);
-        Common.setSpanString("Hey,", Common.currentServerUser.getName(), txt_user);
+        Common.setSpanString("Hey,", Common.currentServerUser.getName() + " Admin", txt_user);
 
         menuClick = R.id.nav_category; //Default
 
@@ -235,12 +254,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onToastEvent(ToastEvent event) {
         if (event.getAction() == Common.ACTION.CREATE) {
             Toast.makeText(this, "Create Success!", Toast.LENGTH_SHORT).show();
-        }
-        else if (event.getAction() == Common.ACTION.UPDATE) {
+        } else if (event.getAction() == Common.ACTION.UPDATE) {
             Toast.makeText(this, "Update Success!", Toast.LENGTH_SHORT).show();
-        }
-
-        else {
+        } else {
             Toast.makeText(this, "Delete Success!", Toast.LENGTH_SHORT).show();
         }
 
@@ -262,6 +278,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         menuItem.setChecked(true);
         drawer.closeDrawers();
         switch (menuItem.getItemId()) {
+            case R.id.nav_location:
+                showUpdateLocationDialog();
+                break;
             case R.id.nav_category:
                 if (menuItem.getItemId() != menuClick) {
                     navController.popBackStack(); //Remove all Backstack
@@ -292,6 +311,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     navController.navigate(R.id.nav_most_popular);
                 }
                 break;
+            case R.id.nav_discount:
+                if (menuItem.getItemId() != menuClick) {
+                    navController.popBackStack(); //Remove all Backstack
+                    navController.navigate(R.id.nav_discount);
+                }
+                break;
             case R.id.nav_send_news:
                 showNewsDialog();
                 break;
@@ -306,6 +331,71 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         menuClick = menuItem.getItemId();
         return true;
+    }
+
+    private void showUpdateLocationDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Update Location");
+        builder.setMessage("Do you want to update this location to your Store?");
+
+        builder.setNegativeButton("NO", (dialogInterface, which) -> dialogInterface.dismiss())
+                .setPositiveButton("YES", (dialogInterface, which) -> {
+
+                    Dexter.withContext(HomeActivity.this)
+                            .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                            .withListener(new PermissionListener() {
+                                @Override
+                                public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+
+                                    FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(HomeActivity.this);
+
+                                    if (ActivityCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        return;
+                                    }
+                                    fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
+                                        @Override
+                                        public boolean isCancellationRequested() {
+                                            return true;
+                                        }
+
+                                        @NonNull
+                                        @Override
+                                        public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                                            return null;
+                                        }
+                                    })
+                                            .addOnSuccessListener(location -> {
+                                                //Update to Firebase
+                                                FirebaseDatabase.getInstance(Common.URL)
+                                                        .getReference(Common.MILKTEA_REF)
+                                                        .child(Common.currentServerUser.getMilktea())
+                                                        .child(Common.LOCATION_REF)
+                                                        .setValue(new MilkteaLocationModel(location.getLatitude(), location.getLongitude()))
+                                                        .addOnSuccessListener(unused -> {
+                                                            Toast.makeText(HomeActivity.this, "Update location successfully", Toast.LENGTH_SHORT).show();
+                                                        })
+                                                        .addOnFailureListener(e -> {
+                                                            Toast.makeText(HomeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                        });
+
+                                            })
+                                            .addOnFailureListener(e -> Toast.makeText(HomeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                                }
+
+                                @Override
+                                public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                                    Toast.makeText(HomeActivity.this, "You must allow this permission", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+                                }
+                            }).check();
+
+                });
+
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void showNewsDialog() {
@@ -561,7 +651,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         PDFUtils.addNewItemWithLeftAndRight(document, "Size", Common.formatSizeJsontoString(cartItem.getFoodSize()),
                                 orderNumberValuefont, orderNumberValuefont);
 
-                        PDFUtils.addNewItemWithLeftAndRight(document, "Addon", Common.formatAddonJsontoString(cartItem.getFoodAddOn()),
+                        PDFUtils.addNewItemWithLeftAndRight(document, "Đường", Common.formatAddonJsontoString(cartItem.getFoodAddOn()),
                                 orderNumberValuefont, orderNumberValuefont);
 
                         //Food Price

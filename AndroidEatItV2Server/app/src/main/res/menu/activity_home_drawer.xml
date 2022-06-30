@@ -5,9 +5,23 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_location"
+            android:icon="@drawable/ic_baseline_location_on_24"
+            android:title="@string/menu_location" />
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item
             android:id="@+id/nav_category"
             android:icon="@drawable/ic_restaurant_menu_black_24dp"
             android:title="@string/menu_category" />
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_discount"
+            android:icon="@drawable/ic_baseline_money_24"
+            android:title="@string/menu_discount" />
     </group>
 
     <group android:checkableBehavior="single">

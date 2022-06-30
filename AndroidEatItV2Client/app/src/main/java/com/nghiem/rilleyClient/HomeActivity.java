@@ -23,6 +23,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.andremion.counterfab.CounterFab;
+import com.nghiem.rilleyClient.EventBus.MenuInflateEvent;
+import com.nghiem.rilleyClient.EventBus.MenuItemEvent;
 import com.nghiem.rilleyClient.R;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -75,6 +77,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private AppBarConfiguration mAppBarConfiguration;
     private DrawerLayout drawer;
     private NavController navController;
+    private NavigationView navigationView;
 
     private CartDataSource cartDataSource;
 
@@ -89,11 +92,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @BindView(R.id.fab)
     CounterFab fab;
+    @BindView(R.id.fab_chat)
+    CounterFab fab_chat;
 
     @Override
     protected void onResume() {
         super.onResume();
-        countCartItem();
+        //countCartItem();
     }
 
     @Override
@@ -112,19 +117,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        fab.setOnClickListener(view -> {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                navController.navigate(R.id.nav_cart);
-            }
+            navController.navigate(R.id.nav_cart);
+        });
+        fab_chat.setOnClickListener(v -> {
+            startActivity(new Intent(this,ChatActivity.class));
         });
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_milktea,
                 R.id.nav_home, R.id.nav_menu, R.id.nav_food_detail,
                 R.id.nav_view_orders, R.id.nav_cart, R.id.nav_food_list)
                 .setDrawerLayout(drawer)
@@ -140,7 +146,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         TextView txt_user = (TextView) headerView.findViewById(R.id.txt_user);
         Common.setSpanString("Hey, ", Common.currentUser.getName(), txt_user);
 
-        countCartItem();
+        //Hide FAB because in Restaurant list , we can't show cart
+        EventBus.getDefault().postSticky(new HideFABCart(true));
+        //countCartItem();
     }
 
     private void initPlacesClient() {
@@ -168,21 +176,36 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         menuItem.setChecked(true);
         drawer.closeDrawers();
         switch (menuItem.getItemId()) {
+            case R.id.nav_milktea:
+                if (menuItem.getItemId() != menuClickId)
+                    navController.navigate(R.id.nav_milktea);
+                    EventBus.getDefault().postSticky(new MenuInflateEvent(true));
+                break;
             case R.id.nav_home:
                 if (menuItem.getItemId() != menuClickId)
+                {
+                    //Display detail menu of restaurant
                     navController.navigate(R.id.nav_home);
+                    EventBus.getDefault().postSticky(new MenuInflateEvent(true));
+                }
                 break;
             case R.id.nav_menu:
-                if (menuItem.getItemId() != menuClickId)
+                if (menuItem.getItemId() != menuClickId) {
                     navController.navigate(R.id.nav_menu);
+                    EventBus.getDefault().postSticky(new MenuInflateEvent(true));
+                }
                 break;
             case R.id.nav_cart:
-                if (menuItem.getItemId() != menuClickId)
+                if (menuItem.getItemId() != menuClickId) {
                     navController.navigate(R.id.nav_cart);
+                    EventBus.getDefault().postSticky(new MenuInflateEvent(true));
+                }
                 break;
             case R.id.nav_view_orders:
-                if (menuItem.getItemId() != menuClickId)
+                if (menuItem.getItemId() != menuClickId){
                     navController.navigate(R.id.nav_view_orders);
+                    EventBus.getDefault().postSticky(new MenuInflateEvent(true));
+                }
                 break;
             case R.id.nav_update_info:
                 showUpdateInfoDialog();
@@ -210,7 +233,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         View itemView = LayoutInflater.from(this).inflate(R.layout.layout_subscribe_news, null);
         CheckBox ckb_news = (CheckBox)itemView.findViewById(R.id.ckb_subscribe_news);
-        boolean isSubscribeNews = Paper.book().read(Common.IS_SUBSCRIBE_NEWS, false);
+        boolean isSubscribeNews = Paper.book().read(Common.currentMilktea.getUid(), false);
 
         if(isSubscribeNews)
             ckb_news.setChecked(true);
@@ -220,9 +243,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }).setPositiveButton("SEND", (dialogInterface, which) -> {
             if(ckb_news.isChecked())
             {
-                Paper.book().write(Common.IS_SUBSCRIBE_NEWS, true);
+                Paper.book().write(Common.currentMilktea.getUid(), true);
                 FirebaseMessaging.getInstance()
-                        .subscribeToTopic(Common.NEWS_TOPIC)
+                        .subscribeToTopic(Common.createTopicNews())
                         .addOnFailureListener(e -> {
                             Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                         })
@@ -232,9 +255,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
             else
             {
-                Paper.book().delete(Common.IS_SUBSCRIBE_NEWS);
+                Paper.book().delete(Common.currentMilktea.getUid());
                 FirebaseMessaging.getInstance()
-                        .unsubscribeFromTopic(Common.NEWS_TOPIC)
+                        .unsubscribeFromTopic(Common.createTopicNews())
                         .addOnFailureListener(e -> {
                             Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                         })
@@ -278,14 +301,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        //Set
+        //Set Data
         edt_phone.setText(Common.currentUser.getPhone());
         edt_name.setText(Common.currentUser.getName());
         edt_address.setText(Common.currentUser.getAddress());
 
         builder.setNegativeButton("CANCEL", (dialogInterface, which) -> dialog.dismiss());
         builder.setPositiveButton("UPDATE", (dialogInterface, which) -> {
-//            if (placeSelected != null) {
+            if (placeSelected != null) {
                 if (TextUtils.isEmpty(edt_name.getText().toString())) {
                     Toast.makeText(HomeActivity.this, "Please enter your name", Toast.LENGTH_SHORT).show();
                     return;
@@ -315,9 +338,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         });
 
 
-//            } else {
-//                Toast.makeText(this, "Please Select Address!", Toast.LENGTH_SHORT).show();
-//            }
+            } else {
+                Toast.makeText(this, "Please Select Address!", Toast.LENGTH_SHORT).show();
+            }
 
         });
 
@@ -367,7 +390,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onStop() {
+        EventBus.getDefault().removeAllStickyEvents(); //Fix eventbus always called after OnaCtivity result.
         EventBus.getDefault().unregister(this);
+        //compositeDisposable.clear();
         super.onStop();
     }
 
@@ -390,9 +415,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onCartCounter(CounterCartEvent event) {
-        if (event.isSuccess()) {
-            countCartItem();
-        }
+//        if (event.isSuccess()) {
+//            countCartItem();
+//        }
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -401,7 +426,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             dialog.show();
 
             FirebaseDatabase.getInstance(Common.URL)
-                    .getReference(Common.CATEGORY_REF)
+                    .getReference(Common.MILKTEA_REF)
+                    .child(Common.currentMilktea.getUid())
+                    .child(Common.CATEGORY_REF)
                     .child(event.getPopularCategoryModel().getMenu_id())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -412,7 +439,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                                 //Load Food
                                 FirebaseDatabase.getInstance(Common.URL)
-                                        .getReference(Common.CATEGORY_REF)
+                                        .getReference(Common.MILKTEA_REF)
+                                        .child(Common.currentMilktea.getUid())
+                                        .child(Common.CATEGORY_REF)
                                         .child(event.getPopularCategoryModel().getMenu_id())
                                         .child("foods")
                                         .orderByChild("id")
@@ -461,7 +490,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             dialog.show();
 
             FirebaseDatabase.getInstance(Common.URL)
-                    .getReference(Common.CATEGORY_REF)
+                    .getReference(Common.MILKTEA_REF)
+                    .child(Common.currentMilktea.getUid())
+                    .child(Common.CATEGORY_REF)
                     .child(event.getBestDealModel().getMenu_id())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -472,7 +503,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                                 //Load Food
                                 FirebaseDatabase.getInstance(Common.URL)
-                                        .getReference(Common.CATEGORY_REF)
+                                        .getReference(Common.MILKTEA_REF)
+                                        .child(Common.currentMilktea.getUid())
+                                        .child(Common.CATEGORY_REF)
                                         .child(event.getBestDealModel().getMenu_id())
                                         .child("foods")
                                         .orderByChild("id")
@@ -519,14 +552,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onHideFABEvent(HideFABCart event) {
         if (event.isHidden()) {
             fab.hide();
-        } else {
+            fab_chat.hide();
+        } else
+        {
             fab.show();
+            fab_chat.show();
             countCartItem();
         }
     }
 
     private void countCartItem() {
-        cartDataSource.countItemInCart(Common.currentUser.getUid())
+        cartDataSource.countItemInCart(Common.currentUser.getUid(),
+                Common.currentMilktea.getUid())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<Integer>() {
@@ -551,9 +588,39 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void countCartAgain(CounterCartEvent event)
+    {
+        if (event.isSuccess())
+            if (Common.currentMilktea != null)
+                countCartItem();
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onMenuItemBack(MenuItemBack event) {
         menuClickId = -1;
         if (getSupportFragmentManager().getBackStackEntryCount() > 0)
             getSupportFragmentManager().popBackStack();
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onMilkteaClick(MenuItemEvent event) {
+        Bundle bundle = new Bundle();
+        bundle.putString("milktea",event.getMilkTeaModel().getUid());
+        navController.navigate(R.id.nav_home,bundle);
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(R.menu.milktea_detail_menu);
+        EventBus.getDefault().postSticky(new MenuInflateEvent(true));
+        EventBus.getDefault().postSticky(new HideFABCart(false));   //Show CART button when user click select restaurant
+        countCartItem();
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onInflateMenu(MenuInflateEvent event) {
+        navigationView.getMenu().clear();
+        if (event.isShowDetail())
+            navigationView.inflateMenu(R.menu.milktea_detail_menu);
+        else
+            navigationView.inflateMenu(R.menu.activity_home_drawer);
+
     }
 }

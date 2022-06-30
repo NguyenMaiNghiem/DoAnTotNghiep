@@ -6,25 +6,28 @@
     <string name="nav_header_title">SĐT : 094 420 30 11</string>
     <string name="nav_header_subtitle">Free ship từ 3 ly trong phạm vi 3Km</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_search">Search</string>
-    <string name="action_clear_cart">Clear Cart</string>
+    <string name="action_settings">Cài Đặt</string>
+    <string name="action_search">Tìm Kiếm</string>
+    <string name="action_clear_cart">Làm trống giỏ hàng</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_subscribe_news">News</string>
-    <string name="menu_menu">Categories</string>
-    <string name="menu_food_detail">Food Detail</string>
-    <string name="menu_view_orders">View Orders</string>
-    <string name="menu_cart">Cart</string>
-    <string name="sign_out">Sign out</string>
-    <string name="update_info">Update Info</string>
-    <string name="menu_food_list">Food List</string>
+    <string name="menu_home">Trang Chủ</string>
+    <string name="menu_milktea">Trà Sữa</string>
+    <string name="menu_subscribe_news">Thông Báo</string>
+    <string name="menu_menu">Thể Loại</string>
+    <string name="menu_food_detail">Chi Tiết Sản Phẩm</string>
+    <string name="menu_view_orders">Xem Đơn Hàng</string>
+    <string name="menu_cart">Giỏ Hàng</string>
+    <string name="sign_out">Đăng Xuất</string>
+    <string name="update_info">Cập Nhật Thông Tin</string>
+    <string name="menu_food_list">Danh Sách Sản Phẩm</string>
 
-    <string name="popular_categories">Popular</string>
-    <string name="best_deals">Recommended</string>
+    <string name="popular_categories">Sản Phẩm Nổi Bật</string>
+    <string name="best_deals">Đề Xuất Cho Bạn</string>
     <string name="size">Size</string>
-    <string name="add_on">Addon</string>
+    <string name="add_on">Đường</string>
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDCzLK1euqRtttRfjkZUJgmQFavo-a9lIc</string>
     <string name="title_activity_tracking_order">Map</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -3,13 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_milktea">
+
+    <fragment
+        android:id="@+id/nav_milktea"
+        android:name="com.nghiem.rilleyClient.ui.milktea.MilkTeaFragment"
+        android:label="@string/menu_milktea"
+        tools:layout="@layout/fragment_milk_tea">
+        <action android:id="@+id/action_nav_milktea_to_nav_home"
+            app:destination="@+id/nav_home"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_home"
         android:name="com.nghiem.rilleyClient.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <argument
+            android:name="milktea"
+            app:argType="string"
+            android:defaultValue="empty"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_menu"

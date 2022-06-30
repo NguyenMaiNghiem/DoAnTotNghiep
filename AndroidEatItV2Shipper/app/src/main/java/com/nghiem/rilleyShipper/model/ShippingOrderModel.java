@@ -1,18 +1,25 @@
 package com.nghiem.rilleyShipper.model;
 
 public class ShippingOrderModel {
-    private String key;
-    private String shipperPhone, shipperName;
+    private String key, shipperPhone, shipperName, milkteaKey;
     private double currentLat, currentLng;
     private OrderModel orderModel;
     private boolean isStartTrip;
-
+    private String estimateTime;
 
     public ShippingOrderModel() {
     }
 
     public String getKey() {
         return key;
+    }
+
+    public String getMilkteaKey() {
+        return milkteaKey;
+    }
+
+    public void setMilkteaKey(String milkteaKey) {
+        this.milkteaKey = milkteaKey;
     }
 
     public void setKey(String key) {
@@ -67,16 +74,12 @@ public class ShippingOrderModel {
         isStartTrip = startTrip;
     }
 
-    @Override
-    public String toString() {
-        return "ShippingOrderModel{" +
-                "key='" + key + '\'' +
-                ", shipperPhone='" + shipperPhone + '\'' +
-                ", shipperName='" + shipperName + '\'' +
-                ", currentLat=" + currentLat +
-                ", currentLng=" + currentLng +
-                ", orderModel=" + orderModel +
-                ", isStartTrip=" + isStartTrip +
-                '}';
+    public String getEstimateTime() {
+        return estimateTime;
     }
+
+    public void setEstimateTime(String estimateTime) {
+        this.estimateTime = estimateTime;
+    }
+
 }

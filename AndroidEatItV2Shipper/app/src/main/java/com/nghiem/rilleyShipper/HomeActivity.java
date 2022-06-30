@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.nghiem.rilleyShipper.R;
 import com.nghiem.rilleyShipper.common.Common;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,12 +24,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.nghiem.rilleyShipper.databinding.ActivityHomeBinding;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.greenrobot.eventbus.EventBus;
+
 import io.paperdb.Paper;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityHomeBinding binding;
+    private DrawerLayout drawer;
+    private int menuClickId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
 
         checkStartTrip();
 
-        DrawerLayout drawer = binding.drawerLayout;
+        drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -52,6 +59,9 @@ public class HomeActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.bringToFront();
     }
 
     private void checkStartTrip() {
@@ -87,7 +97,44 @@ public class HomeActivity extends AppCompatActivity {
 
                     Log.d("MYTOKEN", instanceIdResult.getToken());
                 });
+    }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        menuItem.setChecked(true);
+        drawer.closeDrawers();
+        switch (menuItem.getItemId())
+        {
+            case R.id.nav_sign_out:
+                signOut();
+                break;
+        }
+        menuClickId = menuItem.getItemId();
+        return true;
+    }
 
+    private void signOut() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Signout");
+        builder.setMessage("Do you really want to sign out?");
+
+        builder.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            Common.currentMilktea = null;
+            Common.currentShipperUser = null;
+            Paper.init(HomeActivity.this);
+            Paper.book().delete(Common.MILKTEA_SAVE);
+
+            FirebaseAuth.getInstance().signOut();
+
+            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
+
+        //Show Dialog
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

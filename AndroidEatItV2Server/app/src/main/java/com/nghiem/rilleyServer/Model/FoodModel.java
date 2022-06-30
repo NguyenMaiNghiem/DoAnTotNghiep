@@ -6,13 +6,13 @@ public class FoodModel {
     private String key;
     private String name,image,id,description;
     private Long price;
-    private List<AddonModel> addon;
+    private List<SugarModel> sugar;
     private List<SizeModel> size;
     private Double ratingValue;
     private Long ratingCount;
 
     //For Cart
-    private List<AddonModel> userSelectedAddon;
+    private List<SugarModel> userSelectedAddon;
     private SizeModel userSelectedSize;
 
     //Search
@@ -61,12 +61,12 @@ public class FoodModel {
         this.price = price;
     }
 
-    public List<AddonModel> getAddon() {
-        return addon;
+    public List<SugarModel> getSugar() {
+        return sugar;
     }
 
-    public void setAddon(List<AddonModel> addon) {
-        this.addon = addon;
+    public void setSugar(List<SugarModel> sugar) {
+        this.sugar = sugar;
     }
 
     public List<SizeModel> getSize() {
@@ -101,11 +101,11 @@ public class FoodModel {
         this.ratingCount = ratingCount;
     }
 
-    public List<AddonModel> getUserSelectedAddon() {
+    public List<SugarModel> getUserSelectedAddon() {
         return userSelectedAddon;
     }
 
-    public void setUserSelectedAddon(List<AddonModel> userSelectedAddon) {
+    public void setUserSelectedAddon(List<SugarModel> userSelectedAddon) {
         this.userSelectedAddon = userSelectedAddon;
     }
 

@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.nghiem.rilleyClient.Common.Common;
 import com.nghiem.rilleyClient.Common.MyCustomMarkerAdapter;
 import com.nghiem.rilleyClient.Model.ShippingOrderModel;
-import com.nghiem.rilleyClient.R;
 import com.nghiem.rilleyClient.Remote.IGoogleAPI;
 import com.nghiem.rilleyClient.Remote.RetrofitGoogleAPIClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -139,7 +138,9 @@ public class TrackingOrderActivity extends FragmentActivity implements OnMapRead
 
     private void subscribeShipperMove() {
         shipperRef= FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.SHIPPING_ORDER_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentMilktea.getUid())
+                .child(Common.SHIPPING_ORDER_REF)
                 .child(Common.currentShippingOrder.getKey());
 
         shipperRef.addValueEventListener(this);

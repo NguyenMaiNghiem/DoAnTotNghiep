@@ -60,7 +60,7 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Glide.with(context).load(foodModelList.get(position).getImage()).into((holder.img_food_image));
-        holder.txt_food_price.setText(new StringBuilder("₹").append(foodModelList.get(position).getPrice()));
+        holder.txt_food_price.setText(new StringBuilder(foodModelList.get(position).getPrice().toString()).append(" VNĐ"));
         holder.txt_food_name.setText(new StringBuilder("")
                 .append(foodModelList.get(position).getName()));
 
@@ -75,6 +75,7 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.My
             @Override
             public void onClick(View v) {
                 CartItem cartItem = new CartItem();
+                cartItem.setMilkteaId(Common.currentMilktea.getUid());
                 cartItem.setUid(Common.currentUser.getUid());
                 cartItem.setUserPhone(Common.currentUser.getPhone());
                 cartItem.setCategoryId(Common.categorySelected.getMenu_id());
@@ -91,7 +92,7 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.My
                         Common.categorySelected.getMenu_id(),
                         cartItem.getFoodId(),
                         cartItem.getFoodSize(),
-                        cartItem.getFoodAddOn())
+                        cartItem.getFoodAddOn(),Common.currentMilktea.getUid())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new SingleObserver<CartItem>() {
@@ -162,7 +163,7 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.My
                                             }));
                                 }
 
-                                Toast.makeText(context, "[GET CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(context, "[GET CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
 

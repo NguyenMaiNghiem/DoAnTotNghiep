@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
-    tools:context="com.nghiem.rilleyServer.SizeAddonEditActivity">
+    tools:context="com.nghiem.rilleyServer.SizeAndSugarEditActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
 
         <EditText
             android:id="@+id/edt_name"
-            android:hint="Addon/Size Name"
+            android:hint="Sugar/Size Name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -43,7 +43,7 @@
 
         <EditText
             android:id="@+id/edt_price"
-            android:hint="Addon/Size Price"
+            android:hint="Sugar/Size Price"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

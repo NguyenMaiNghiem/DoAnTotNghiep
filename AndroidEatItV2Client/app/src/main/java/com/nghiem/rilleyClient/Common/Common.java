@@ -4,13 +4,17 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.OpenableColumns;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -20,7 +24,9 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
-import com.nghiem.rilleyClient.Model.AddonModel;
+import com.nghiem.rilleyClient.Model.DiscountModel;
+import com.nghiem.rilleyClient.Model.MilkTeaModel;
+import com.nghiem.rilleyClient.Model.SugarModel;
 import com.nghiem.rilleyClient.Model.CategoryModel;
 import com.nghiem.rilleyClient.Model.FoodModel;
 import com.nghiem.rilleyClient.Model.ShippingOrderModel;
@@ -54,11 +60,23 @@ public class Common {
     public static final String NEWS_TOPIC = "news";
     public static final String IS_SEND_IMAGE = "IS_SEND_IMAGE";
     public static final String IMAGE_URL = "IMAGE_URL";
+    public static final String MILKTEA_REF = "Milktea";
+    public static final String QR_CODE_TAG = "QRCode";
+    public static final String DISCOUNT = "Discount";
+    public static final String LOCATION_REF = "Location";
+    public static final float SHIPPING_COST_PER_KM = 1; //1$ per km
+    public static final double MAX_SHIPPING_COST = 30;  //if over 30km we just take 30$
     private static final String TOKEN_REF = "Tokens";
+    public static final String CHAT_REF = "Chat";
+    public static final String KEY_ROOM_ID = "CHAT_ROOM_ID";
+    public static final String KEY_CHAT_USER = "CHAT_SENDER";
+    public static final String CHAT_DETAIL_REF = "ChatDetail";
     public static UserModel currentUser;
     public static CategoryModel categorySelected;
     public static FoodModel selectedFood;
     public static ShippingOrderModel currentShippingOrder;
+    public static MilkTeaModel currentMilktea;
+    public static DiscountModel discountApply;
 
 
     public static String formatPrice(double price) {
@@ -76,16 +94,16 @@ public class Common {
 
     }
 
-    public static Double calculateExtraPrice(SizeModel userSelectedSize, List<AddonModel> userSelectedAddon) {
+    public static Double calculateExtraPrice(SizeModel userSelectedSize, List<SugarModel> userSelectedAddon) {
         Double result = 0.0;
         if(userSelectedSize == null && userSelectedAddon == null)
             return 0.0;
         else if(userSelectedSize == null)
         {
             //If User Selected Add on !=null, sum price
-            for(AddonModel addonModel: userSelectedAddon)
+            for(SugarModel sugarModel : userSelectedAddon)
             {
-                result+= addonModel.getPrice();
+                result+= sugarModel.getPrice();
             }
             return result;
         }
@@ -97,9 +115,9 @@ public class Common {
         {
             //If both Size and Addon Selected
             result = userSelectedSize.getPrice()*1.0;
-            for(AddonModel addonModel: userSelectedAddon)
+            for(SugarModel sugarModel : userSelectedAddon)
             {
-                result+= addonModel.getPrice();
+                result+= sugarModel.getPrice();
             }
 
             return result;
@@ -232,7 +250,20 @@ public class Common {
     }
 
     public static String createTopicOrder() {
-        return new StringBuilder("/topics/new_order_darshil").toString();
+        //return something like "/topics/milkteaid_new_order
+        return new StringBuilder("/topics/")
+                .append(Common.currentMilktea.getUid())
+                .append("_")
+                .append("new_order")
+                .toString();
+    }
+
+    public static String createTopicNews(){
+        return new StringBuilder("/topics/")
+                .append(Common.currentMilktea.getUid())
+                .append("_")
+                .append("news")
+                .toString();
     }
 
     public static List<LatLng> decodePoly(String encoded) {
@@ -272,13 +303,13 @@ public class Common {
 
     }
 
-    public static String getListAddon(List<AddonModel> addonModels) {
+    public static String getListAddon(List<SugarModel> sugarModels) {
 
         StringBuilder result = new StringBuilder();
 
-        for(AddonModel addonModel : addonModels)
+        for(SugarModel sugarModel : sugarModels)
         {
-            result.append(addonModel.getName()).append(",");
+            result.append(sugarModel.getName()).append(",");
         }
 
         return result.substring(0, result.length()-1); //Remove Last ","
@@ -335,4 +366,38 @@ public class Common {
 
     }
 
+    public static String generateChatRoomId(String a, String b)
+    {
+        if (a.compareTo(b) > 0)
+            return new StringBuilder(a).append(b).toString();
+        else if (a.compareTo(b) < 0)
+            return new StringBuilder(b).append(a).toString();
+        else
+            return new StringBuilder("ChatYourSelf_Error_")
+            .append(new Random().nextInt())
+            .toString();
+    }
+
+    public static String getFileName(ContentResolver contentResolver, Uri fileUri) {
+        String result = null;
+        if (fileUri.getScheme().equals("content"))
+        {
+            Cursor cursor = contentResolver.query(fileUri,null,null,null,null);
+            try{
+                if (cursor != null && cursor.moveToFirst())
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+            }finally {
+                cursor.close();
+            }
+        }
+        if (result == null)
+        {
+            result = fileUri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1)
+                result = result.substring(cut+1);
+        }
+        return result;
+    }
 }

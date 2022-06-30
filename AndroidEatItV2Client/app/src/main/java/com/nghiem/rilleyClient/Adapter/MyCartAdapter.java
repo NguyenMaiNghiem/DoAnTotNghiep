@@ -15,7 +15,7 @@ import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.nghiem.rilleyClient.Common.Common;
 import com.nghiem.rilleyClient.Database.CartItem;
 import com.nghiem.rilleyClient.EventBus.UpdateItemInCart;
-import com.nghiem.rilleyClient.Model.AddonModel;
+import com.nghiem.rilleyClient.Model.SugarModel;
 import com.nghiem.rilleyClient.Model.SizeModel;
 import com.nghiem.rilleyClient.R;
 import com.google.gson.Gson;
@@ -72,11 +72,11 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.MyViewHold
         if(cartItemList.get(position).getFoodAddOn()!=null)
         {
             if(cartItemList.get(position).getFoodAddOn().equals("Default"))
-                holder.txt_food_addon.setText(new StringBuilder("Addon: ").append("Default"));
+                holder.txt_food_addon.setText(new StringBuilder("Đường: ").append("Default"));
             else
             {
-                List<AddonModel> addonModels = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<List<AddonModel>>(){}.getType());
-                holder.txt_food_addon.setText(new StringBuilder("Addon: ").append(Common.getListAddon(addonModels)));
+                List<SugarModel> sugarModels = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<List<SugarModel>>(){}.getType());
+                holder.txt_food_addon.setText(new StringBuilder("Đường: ").append(Common.getListAddon(sugarModels)));
 
             }
 

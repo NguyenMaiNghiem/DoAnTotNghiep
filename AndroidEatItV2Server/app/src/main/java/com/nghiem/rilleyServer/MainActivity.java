@@ -8,11 +8,13 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.nghiem.rilleyServer.Common.Common;
 import com.nghiem.rilleyServer.Model.ServerUserModel;
 import com.firebase.ui.auth.AuthUI;
@@ -51,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        providers = Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build()); //Phone Authentication (Sign In Method)
+        providers = Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build()   //Phone Authentication (Sign In Method)
+                ,new AuthUI.IdpConfig.EmailBuilder().build());
         serverRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.SERVER_REF);
         firebaseAuth = FirebaseAuth.getInstance();
         dialog = new SpotsDialog.Builder().setCancelable(false).setContext(this).build();
@@ -87,9 +90,11 @@ public class MainActivity extends AppCompatActivity {
         // Create and launch sign-in intent
         startActivityForResult(AuthUI.getInstance()
                         .createSignInIntentBuilder()
+                        .setLogo(R.drawable.anhdaidien)
+                        .setTheme(R.style.LoginTheme)
                         .setAvailableProviders(providers)
                         .build()
-                        , APP_REQUEST_CODE);
+                ,APP_REQUEST_CODE);
 
     }
 
@@ -150,11 +155,18 @@ public class MainActivity extends AppCompatActivity {
         builder.setMessage("Please fill information \nAdmin will accept your account late");
 
         View itemView = LayoutInflater.from(this).inflate(R.layout.layout_register, null);
+        TextInputLayout phone_input_layout = (TextInputLayout)itemView.findViewById(R.id.phone_input_layout);
         EditText edt_name = (EditText) itemView.findViewById(R.id.edt_name);
         EditText edt_phone = (EditText) itemView.findViewById(R.id.edt_phone);
 
-        //Set
-        edt_phone.setText(user.getPhoneNumber());
+        //Set Data
+        if (user.getPhoneNumber() == null || TextUtils.isEmpty(user.getPhoneNumber()))
+        {
+            phone_input_layout.setHint("Email");
+            edt_phone.setText(user.getEmail());
+            edt_name.setText(user.getDisplayName());
+        }else
+            edt_phone.setText(user.getPhoneNumber());
 
 
         builder.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());

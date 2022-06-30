@@ -1,15 +1,15 @@
 package com.nghiem.rilleyServer.EventBus;
 
-public class AddonSizeEditEvent {
+public class SugarSizeEditEvent {
     private boolean addon;
     private int pos;
 
-    public AddonSizeEditEvent(boolean addon, int pos) {
+    public SugarSizeEditEvent(boolean addon, int pos) {
         this.addon = addon;
         this.pos = pos;
     }
 
-    public boolean isAddon() {
+    public boolean isSugar() {
         return addon;
     }
 

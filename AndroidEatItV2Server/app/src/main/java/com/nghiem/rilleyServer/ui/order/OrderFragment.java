@@ -148,28 +148,30 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
         MySwipeHelper mySwipeHelper = new MySwipeHelper(getContext(), recycler_orders, width / 6) {
             @Override
             public void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buf) {
-                buf.add(new MyButton(getContext(), "Print", 30, 0, Color.parseColor("#8b0010"), pos -> {
-                    Dexter.withContext(getActivity())
-                            .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            .withListener(new PermissionListener() {
-                                @Override
-                                public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                                    EventBus.getDefault().postSticky(new PrintOrderEvent(new StringBuilder(Common.getAppPath(getActivity()))
-                                            .append(Common.FILE_PRINT).toString(), adapter.getItemAtPosition(pos)));
-                                }
 
-                                @Override
-                                public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                                    Toast.makeText(getContext(), "Please accept this permission", Toast.LENGTH_SHORT).show();
-                                }
+//                buf.add(new MyButton(getContext(), "Print", 30, 0, Color.parseColor("#8b0010"), pos -> {
+//                    Dexter.withContext(getActivity())
+//                            .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                            .withListener(new PermissionListener() {
+//                                @Override
+//                                public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+//                                    EventBus.getDefault().postSticky(new PrintOrderEvent(new StringBuilder(Common.getAppPath(getActivity()))
+//                                            .append(Common.FILE_PRINT).toString(), adapter.getItemAtPosition(pos)));
+//                                }
+//
+//                                @Override
+//                                public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+//                                    Toast.makeText(getContext(), "Please accept this permission", Toast.LENGTH_SHORT).show();
+//                                }
+//
+//                                @Override
+//                                public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+//
+//                                }
+//                            }).check();
+//
+//                }));
 
-                                @Override
-                                public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-
-                                }
-                            }).check();
-
-                }));
                 buf.add(new MyButton(getContext(), "Directions", 30, 0, Color.parseColor("#8b0010"), pos -> {
                     OrderModel orderModel = ((MyOrderAdapter)recycler_orders.getAdapter())
                             .getItemAtPosition(pos);
@@ -220,7 +222,9 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
                             .setPositiveButton("DELETE", (dialogInterface, i) -> {
                                 OrderModel orderModel = adapter.getItemAtPosition(pos); //get Item in Adapter
                                 FirebaseDatabase.getInstance(Common.URL)
-                                        .getReference(Common.ORDER_REF)
+                                        .getReference(Common.MILKTEA_REF)
+                                        .child(Common.currentServerUser.getMilktea())
+                                        .child(Common.ORDER_REF)
                                         .child(orderModel.getKey())
                                         .removeValue()
                                         .addOnFailureListener(e -> {
@@ -306,7 +310,9 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
     private void loadShipperList(int pos, OrderModel orderModel, AlertDialog dialog, Button btn_ok, Button btn_cancel, RadioButton rdi_shipping, RadioButton rdi_shipped, RadioButton rdi_cancelled, RadioButton rdi_delete, RadioButton rdi_restored_placed) {
         List<ShipperModel> tempList = new ArrayList<>();
         DatabaseReference shipperRef = FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.SHIPPER_REF);
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.SHIPPER_REF);
 
         Query shipperActive = shipperRef.orderByChild("active").equalTo(true);  //Load only shipper active by server app
         shipperActive.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -392,6 +398,7 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
 
     private void createShippingOrder(int pos, ShipperModel shipperModel, OrderModel orderModel, AlertDialog dialog) {
         ShippingOrderModel shippingOrderModel = new ShippingOrderModel();
+        shippingOrderModel.setMilkteaKey(Common.currentServerUser.getMilktea());
         shippingOrderModel.setShipperPhone(shipperModel.getPhone());
         shippingOrderModel.setShipperName(shipperModel.getName());
         shippingOrderModel.setOrderModel(orderModel);
@@ -400,7 +407,9 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
         shippingOrderModel.setCurrentLng(-1.0);
 
         FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.SHIPPING_ORDER_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.SHIPPING_ORDER_REF)
                 .child(orderModel.getKey()) //Shipepr Model key will be Order Key
                 .setValue(shippingOrderModel)
                 .addOnFailureListener(e -> {
@@ -413,6 +422,7 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
                         dialog.dismiss();
                         Toast.makeText(getContext(), "Order has been sent to shipper", Toast.LENGTH_SHORT).show();
 
+                        //First , get token of shipper
                         FirebaseDatabase.getInstance(Common.URL)
                                 .getReference(Common.TOKEN_REF)
                                 .child(shipperModel.getKey())
@@ -422,8 +432,8 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
                                         if (dataSnapshot.exists()) {
                                             TokenModel tokenModel = dataSnapshot.getValue(TokenModel.class);
                                             Map<String, String> notidata = new HashMap<>();
-                                            notidata.put(Common.NOTI_TITLE, "Your have new order need ship ");
-                                            notidata.put(Common.NOTI_CONTENT, new StringBuilder("Your have new order need ship to ")
+                                            notidata.put(Common.NOTI_TITLE, "You have new order need ship");
+                                            notidata.put(Common.NOTI_CONTENT, new StringBuilder("You have new order need ship to")
                                                     .append(orderModel.getUserPhone()).toString()
                                             );
 
@@ -469,7 +479,9 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
             updateData.put("orderStatus", status);
 
             FirebaseDatabase.getInstance(Common.URL)
-                    .getReference(Common.ORDER_REF)
+                    .getReference(Common.MILKTEA_REF)
+                    .child(Common.currentServerUser.getMilktea())
+                    .child(Common.ORDER_REF)
                     .child(orderModel.getKey())
                     .updateChildren(updateData)
                     .addOnFailureListener(e -> {
@@ -543,7 +555,9 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
     private void deleteOrder(int pos, OrderModel orderModel) {
         if (!TextUtils.isEmpty(orderModel.getKey())) {
             FirebaseDatabase.getInstance(Common.URL)
-                    .getReference(Common.ORDER_REF)
+                    .getReference(Common.MILKTEA_REF)
+                    .child(Common.currentServerUser.getMilktea())
+                    .child(Common.ORDER_REF)
                     .child(orderModel.getKey())
                     .removeValue()
                     .addOnFailureListener(e -> {

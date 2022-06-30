@@ -136,8 +136,6 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.MyViewHo
         @BindView(R.id.img_food_image)
         ImageView img_food_image;
         @BindView(R.id.txt_name)
-        TextView txt_order_date;
-        @BindView(R.id.txt_order_date)
         TextView txt_name;
         @BindView(R.id.txt_time)
         TextView txt_time;

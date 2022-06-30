@@ -16,15 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.nghiem.rilleyServer.Adapter.MyAddonAdapter;
+import com.nghiem.rilleyServer.Adapter.MySugarAdapter;
 import com.nghiem.rilleyServer.Adapter.MySizeAdapter;
 import com.nghiem.rilleyServer.Common.Common;
-import com.nghiem.rilleyServer.EventBus.AddonSizeEditEvent;
+import com.nghiem.rilleyServer.EventBus.SugarSizeEditEvent;
 import com.nghiem.rilleyServer.EventBus.SelectedAddonModel;
 import com.nghiem.rilleyServer.EventBus.SelectedSizeModel;
-import com.nghiem.rilleyServer.EventBus.UpdateAddonModel;
+import com.nghiem.rilleyServer.EventBus.UpdateSugarModel;
 import com.nghiem.rilleyServer.EventBus.UpdateSizeModel;
-import com.nghiem.rilleyServer.Model.AddonModel;
+import com.nghiem.rilleyServer.Model.SugarModel;
 import com.nghiem.rilleyServer.Model.SizeModel;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -39,7 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SizeAddonEditActivity extends AppCompatActivity {
+public class SizeAndSugarEditActivity extends AppCompatActivity {
 
     @BindView(R.id.tooL_bar)
     Toolbar toolbar;
@@ -100,7 +100,9 @@ public class SizeAddonEditActivity extends AppCompatActivity {
             updateData.put("foods", Common.categorySelected.getFoods());
 
             FirebaseDatabase.getInstance(Common.URL)
-                    .getReference(Common.CATEGORY_REF)
+                    .getReference(Common.MILKTEA_REF)
+                    .child(Common.currentServerUser.getMilktea())
+                    .child(Common.CATEGORY_REF)
                     .child(Common.categorySelected.getMenu_id())
                     .updateChildren(updateData)
                     .addOnFailureListener(e -> {
@@ -111,50 +113,57 @@ public class SizeAddonEditActivity extends AppCompatActivity {
                         {
                             Toast.makeText(this, "Reload Success!", Toast.LENGTH_SHORT).show();
                             needSave=false;
-                            edt_price.setText("0");
+                            edt_price.setText("");
                             edt_name.setText("");
                         }
                     });
-
         }
     }
 
     private void closeActivity() {
         edt_name.setText("");
-        edt_price.setText("0");
+        edt_price.setText("");
         finish();
     }
 
     //Variable
     MySizeAdapter adapter;
-    MyAddonAdapter addonAdapter;
+    MySugarAdapter mySugarAdapter;
 
     private int foodEditPosition = -1;
     private boolean needSave = false;
-    private boolean isAddon=false;
+    private boolean isSugar = false;
 
     //Event
     @OnClick(R.id.btn_create)
     void onCreateNew()
     {
-        if(!isAddon) //Size
-        {
-            if(adapter!=null)
-            {
-                SizeModel sizeModel = new SizeModel();
-                sizeModel.setName(edt_name.getText().toString());
-                sizeModel.setPrice(Long.valueOf(edt_price.getText().toString()));
-                adapter.addNewSize(sizeModel);
-            }
+        if (edt_name.getText().toString().isEmpty() || edt_price.getText().toString().isEmpty()){
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_LONG).show();
         }
         else
         {
-            if(addonAdapter!=null)
+            if(!isSugar) //Size
             {
-                AddonModel addonModel = new AddonModel();
-                addonModel.setName(edt_name.getText().toString());
-                addonModel.setPrice(Long.valueOf(edt_price.getText().toString()));
-                addonAdapter.addNewAddon(addonModel);
+                if(adapter!=null)
+                {
+                    SizeModel sizeModel = new SizeModel();
+                    sizeModel.setName(edt_name.getText().toString());
+                    sizeModel.setPrice(Long.valueOf(edt_price.getText().toString()));
+                    adapter.addNewSize(sizeModel);
+                    Toast.makeText(this, "Thêm thành công", Toast.LENGTH_LONG).show();
+                }
+            }
+            else
+            {
+                if(mySugarAdapter !=null)
+                {
+                    SugarModel sugarModel = new SugarModel();
+                    sugarModel.setName(edt_name.getText().toString());
+                    sugarModel.setPrice(Long.valueOf(edt_price.getText().toString()));
+                    mySugarAdapter.addNewAddon(sugarModel);
+                    Toast.makeText(this, "Thêm thành công", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
@@ -162,26 +171,35 @@ public class SizeAddonEditActivity extends AppCompatActivity {
     @OnClick(R.id.btn_edit)
     void onEdit()
     {
-        if(!isAddon) //Size
-        {
-            if(adapter!=null)
-            {
-                SizeModel sizeModel = new SizeModel();
-                sizeModel.setName(edt_name.getText().toString());
-                sizeModel.setPrice(Long.valueOf(edt_price.getText().toString()));
-                adapter.editSize(sizeModel);
-            }
+        if (edt_name.getText().toString().isEmpty() || edt_price.getText().toString().isEmpty()){
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_LONG).show();
         }
         else
         {
-            if(addonAdapter!=null)
+            if(!isSugar) //Size
             {
-                AddonModel addonModel = new AddonModel();
-                addonModel.setName(edt_name.getText().toString());
-                addonModel.setPrice(Long.valueOf(edt_price.getText().toString()));
-                addonAdapter.editAddon(addonModel);
+                if(adapter!=null)
+                {
+                    SizeModel sizeModel = new SizeModel();
+                    sizeModel.setName(edt_name.getText().toString());
+                    sizeModel.setPrice(Long.valueOf(edt_price.getText().toString()));
+                    adapter.editSize(sizeModel);
+                    Toast.makeText(this, "Chỉnh sửa thành công", Toast.LENGTH_LONG).show();
+                }
+            }
+            else
+            {
+                if(mySugarAdapter !=null)
+                {
+                    SugarModel sugarModel = new SugarModel();
+                    sugarModel.setName(edt_name.getText().toString());
+                    sugarModel.setPrice(Long.valueOf(edt_price.getText().toString()));
+                    mySugarAdapter.editAddon(sugarModel);
+                    Toast.makeText(this, "Chỉnh sửa thành công", Toast.LENGTH_LONG).show();
+                }
             }
         }
+
     }
 
 
@@ -228,8 +246,8 @@ public class SizeAddonEditActivity extends AppCompatActivity {
 
     //Receive Event
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onAddonSizeReceive(AddonSizeEditEvent event) {
-        if (!event.isAddon()) //If Event is Size
+    public void onAddonSizeReceive(SugarSizeEditEvent event) {
+        if (!event.isSugar()) //If Event is Size
         {
             if (Common.selectedFood.getSize() == null) //If Size is empty
                 Common.selectedFood.setSize(new ArrayList<>());
@@ -237,23 +255,21 @@ public class SizeAddonEditActivity extends AppCompatActivity {
                 foodEditPosition = event.getPos(); //Save food edit to Update
                 recycler_addon_size.setAdapter(adapter);
 
-                isAddon = event.isAddon();
+                isSugar = event.isSugar();
 
 
         }
         else //Is Addon
         {
-            if (Common.selectedFood.getAddon()  == null) //If Addon  empty
-                Common.selectedFood.setAddon(new ArrayList<>());
-                addonAdapter = new MyAddonAdapter(this, Common.selectedFood.getAddon());
+            if (Common.selectedFood.getSugar()  == null) //If Addon  empty
+                Common.selectedFood.setSugar(new ArrayList<>());
+                mySugarAdapter = new MySugarAdapter(this, Common.selectedFood.getSugar());
                 foodEditPosition = event.getPos(); //Save food edit to Update
-                recycler_addon_size.setAdapter(addonAdapter);
+                recycler_addon_size.setAdapter(mySugarAdapter);
 
-                isAddon = event.isAddon();
+                isSugar = event.isSugar();
 
         }
-
-
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -266,10 +282,10 @@ public class SizeAddonEditActivity extends AppCompatActivity {
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onAddonModelUpdate(UpdateAddonModel event) {
+    public void onAddonModelUpdate(UpdateSugarModel event) {
         if (event.getAddonModel() != null) {
             needSave = true;
-            Common.selectedFood.setAddon(event.getAddonModel());
+            Common.selectedFood.setSugar(event.getAddonModel());
         }
 
     }

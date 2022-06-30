@@ -14,7 +14,6 @@
         android:textStyle="bold"
         android:drawableLeft="@drawable/ic_speaker_notes_black_24dp"
         android:gravity="center"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -22,7 +21,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_orders"
         android:layout_width="match_parent"
-        android:layout_height="669dp" />
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
 
 
 </LinearLayout>

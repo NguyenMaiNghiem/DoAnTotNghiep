@@ -35,7 +35,7 @@ import com.nghiem.rilleyClient.Database.CartItem;
 import com.nghiem.rilleyClient.Database.LocalCartDataSource;
 import com.nghiem.rilleyClient.EventBus.CounterCartEvent;
 import com.nghiem.rilleyClient.EventBus.MenuItemBack;
-import com.nghiem.rilleyClient.Model.AddonModel;
+import com.nghiem.rilleyClient.Model.SugarModel;
 import com.nghiem.rilleyClient.Model.CommentModel;
 import com.nghiem.rilleyClient.Model.FoodModel;
 import com.nghiem.rilleyClient.Model.SizeModel;
@@ -125,7 +125,7 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
     @OnClick(R.id.img_add_on)
     void onAddonClick()
     {
-        if(Common.selectedFood.getAddon() != null) {
+        if(Common.selectedFood.getSugar() != null) {
             displayAddOnList(); //Show All AddonOption
             addonBottomSheetDialog.show();
         }
@@ -136,6 +136,7 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
     void onCartItemAdd()
     {
         CartItem cartItem = new CartItem();
+        cartItem.setMilkteaId(Common.currentMilktea.getUid());
         cartItem.setUid(Common.currentUser.getUid());
         cartItem.setUserPhone(Common.currentUser.getPhone());
         cartItem.setCategoryId(Common.categorySelected.getMenu_id());
@@ -159,7 +160,7 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
                 Common.categorySelected.getMenu_id(),
                 cartItem.getFoodId(),
                 cartItem.getFoodSize(),
-                cartItem.getFoodAddOn())
+                cartItem.getFoodAddOn(),Common.currentMilktea.getUid())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<CartItem>() {
@@ -230,7 +231,7 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
                                     }));
                         }
 
-                        Toast.makeText(getContext(), "[GET CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "[GET CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -238,7 +239,7 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
 
 
     private void displayAddOnList() {
-        if(Common.selectedFood.getAddon().size() > 0)
+        if(Common.selectedFood.getSugar().size() > 0)
         {
             chip_group_addon.clearCheck();
             chip_group_addon.removeAllViews();
@@ -246,11 +247,11 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
             edt_search.addTextChangedListener(this);
 
             //Add on All Views
-            for(AddonModel addonModel :  Common.selectedFood.getAddon())
+            for(SugarModel sugarModel :  Common.selectedFood.getSugar())
             {
                 Chip chip = (Chip)getLayoutInflater().inflate(R.layout.layout_addon_item, null);
-                chip.setText(new StringBuilder(addonModel.getName()).append("(+$")
-                        .append(addonModel.getPrice()).append(")"));
+                chip.setText(new StringBuilder(sugarModel.getName()).append("(+$")
+                        .append(sugarModel.getPrice()).append(")"));
 
                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -259,7 +260,7 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
                         {
                             if(Common.selectedFood.getUserSelectedAddon() == null)
                                 Common.selectedFood.setUserSelectedAddon(new ArrayList<>());
-                            Common.selectedFood.getUserSelectedAddon().add(addonModel);
+                            Common.selectedFood.getUserSelectedAddon().add(sugarModel);
                         }
                     }
                 });
@@ -376,10 +377,10 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
         if (Common.selectedFood.getUserSelectedAddon() != null &&
                 Common.selectedFood.getUserSelectedAddon().size() > 0) {
             chip_group_user_selected_addon.removeAllViews();
-            for (AddonModel addonModel : Common.selectedFood.getUserSelectedAddon()) {
+            for (SugarModel sugarModel : Common.selectedFood.getUserSelectedAddon()) {
                 Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_with_delete_icon, null);
-                chip.setText(new StringBuilder(addonModel.getName()).append("(+$")
-                        .append(addonModel.getPrice()).append(")"));
+                chip.setText(new StringBuilder(sugarModel.getName()).append("(+$")
+                        .append(sugarModel.getPrice()).append(")"));
 
                 chip.setClickable(false);
                 chip.setOnCloseIconClickListener(new View.OnClickListener() {
@@ -387,7 +388,7 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
                     public void onClick(View view) {
                         //Remove when User Click Delete
                         chip_group_user_selected_addon.removeView(view);
-                        Common.selectedFood.getUserSelectedAddon().remove(addonModel);
+                        Common.selectedFood.getUserSelectedAddon().remove(sugarModel);
                         calculateTotalPrice();
                     }
                 });
@@ -405,7 +406,9 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
 
         //First, We will submit to Comment Ref.
         FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.COMMENT_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentMilktea.getUid())
+                .child(Common.COMMENT_REF)
                 .child(Common.selectedFood.getId())
                 .push()
                 .setValue(commentModel)
@@ -423,7 +426,9 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
 
     private void addRatingToFood(float ratingValue) {
         FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.CATEGORY_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentMilktea.getUid())
+                .child(Common.CATEGORY_REF)
                 .child(Common.categorySelected.getMenu_id()) //Select Category
                 .child("foods") //Select Arrya list of category
                 .child(Common.selectedFood.getKey()) //Because food item is array list and key is index of array
@@ -495,24 +500,27 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
                 .setTitle(Common.selectedFood.getName());
 
         //Size
-        for (SizeModel sizeModel : Common.selectedFood.getSize()) {
-            RadioButton radioButton = new RadioButton(getContext());
-            radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked)
-                        Common.selectedFood.setUserSelectedSize(sizeModel);
-                    calculateTotalPrice();  //Update Price
-                }
-            });
+        if (Common.selectedFood.getSize() != null){
+            for (SizeModel sizeModel : Common.selectedFood.getSize()) {
+                RadioButton radioButton = new RadioButton(getContext());
+                radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked)
+                            Common.selectedFood.setUserSelectedSize(sizeModel);
+                        calculateTotalPrice();  //Update Price
+                    }
+                });
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
-            radioButton.setLayoutParams(params);
-            radioButton.setText(sizeModel.getName());
-            radioButton.setTag(sizeModel.getPrice());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
+                radioButton.setLayoutParams(params);
+                radioButton.setText(sizeModel.getName());
+                radioButton.setTag(sizeModel.getPrice());
 
-            rdi_group_size.addView(radioButton);
+                rdi_group_size.addView(radioButton);
+            }
         }
+
 
         if (rdi_group_size.getChildCount() > 0) {
             RadioButton radioButton = (RadioButton) rdi_group_size.getChildAt(0);
@@ -528,8 +536,8 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
 
         //Addon
         if(Common.selectedFood.getUserSelectedAddon() != null && Common.selectedFood.getUserSelectedAddon().size() > 0)
-            for(AddonModel addonModel : Common.selectedFood.getUserSelectedAddon())
-                totalPrice += Double.parseDouble(addonModel.getPrice().toString());
+            for(SugarModel sugarModel : Common.selectedFood.getUserSelectedAddon())
+                totalPrice += Double.parseDouble(sugarModel.getPrice().toString());
 
 
         //Size
@@ -553,13 +561,13 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
         chip_group_addon.clearCheck();
         chip_group_addon.removeAllViews();
 
-        for(AddonModel addonModel :  Common.selectedFood.getAddon())
+        for(SugarModel sugarModel :  Common.selectedFood.getSugar())
         {
-            if(addonModel.getName().toLowerCase().contains(charSequence.toString().toLowerCase()))
+            if(sugarModel.getName().toLowerCase().contains(charSequence.toString().toLowerCase()))
             {
                 Chip chip = (Chip)getLayoutInflater().inflate(R.layout.layout_addon_item, null);
-                chip.setText(new StringBuilder(addonModel.getName()).append("(+$")
-                        .append(addonModel.getPrice()).append(")"));
+                chip.setText(new StringBuilder(sugarModel.getName()).append("(+$")
+                        .append(sugarModel.getPrice()).append(")"));
 
                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -568,7 +576,7 @@ public class FoodDetailFragment extends Fragment implements TextWatcher {
                         {
                             if(Common.selectedFood.getUserSelectedAddon() == null)
                                 Common.selectedFood.setUserSelectedAddon(new ArrayList<>());
-                            Common.selectedFood.getUserSelectedAddon().add(addonModel);
+                            Common.selectedFood.getUserSelectedAddon().add(sugarModel);
                         }
                     }
                 });

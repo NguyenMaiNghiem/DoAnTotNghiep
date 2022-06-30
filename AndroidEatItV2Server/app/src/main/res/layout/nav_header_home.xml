@@ -16,11 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:weightSum="10">
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="150dp"
+            android:layout_width="110dp"
             android:layout_height="100dp"
             android:contentDescription="@string/nav_header_desc"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -31,7 +32,7 @@
             android:id="@+id/txt_user"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="10"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:fontFamily="@font/brandon_medium"
             android:textSize="20sp"

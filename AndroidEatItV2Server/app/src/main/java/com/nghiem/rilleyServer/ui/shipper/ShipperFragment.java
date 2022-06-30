@@ -194,7 +194,9 @@ public class ShipperFragment extends Fragment {
         Map<String, Object> updateData = new HashMap<>();
         updateData.put("active",event.isActive()); //Get STate of button, Shipper
         FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.SHIPPER_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.SHIPPER_REF)
                 .child(event.getShipperModel().getKey())
                 .updateChildren(updateData)
                 .addOnFailureListener(e -> {

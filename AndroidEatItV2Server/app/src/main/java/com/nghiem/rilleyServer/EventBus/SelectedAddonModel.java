@@ -1,21 +1,21 @@
 package com.nghiem.rilleyServer.EventBus;
 
-import com.nghiem.rilleyServer.Model.AddonModel;
+import com.nghiem.rilleyServer.Model.SugarModel;
 
 public class SelectedAddonModel {
 
-    AddonModel addonModel;
+    SugarModel sugarModel;
 
-    public SelectedAddonModel(AddonModel addonModel) {
-        this.addonModel = addonModel;
+    public SelectedAddonModel(SugarModel sugarModel) {
+        this.sugarModel = sugarModel;
     }
 
 
-    public AddonModel getAddonModel() {
-        return addonModel;
+    public SugarModel getAddonModel() {
+        return sugarModel;
     }
 
-    public void setAddonModel(AddonModel addonModel) {
-        this.addonModel = addonModel;
+    public void setAddonModel(SugarModel sugarModel) {
+        this.sugarModel = sugarModel;
     }
 }

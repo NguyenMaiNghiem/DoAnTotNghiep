@@ -15,23 +15,23 @@ public class LocalCartDataSource implements CartDataSource {
     }
 
     @Override
-    public Flowable<List<CartItem>> getAllCart(String uid) {
-        return cartDAO.getAllCart(uid);
+    public Flowable<List<CartItem>> getAllCart(String uid, String milkteaId) {
+        return cartDAO.getAllCart(uid,milkteaId);
     }
 
     @Override
-    public Single<Integer> countItemInCart(String uid) {
-        return cartDAO.countItemInCart(uid);
+    public Single<Integer> countItemInCart(String uid, String milkteaId) {
+        return cartDAO.countItemInCart(uid, milkteaId);
     }
 
     @Override
-    public Single<Double> sumPriceInCart(String uid) {
-        return cartDAO.sumPriceInCart(uid);
+    public Single<Double> sumPriceInCart(String uid, String milkteaId) {
+        return cartDAO.sumPriceInCart(uid, milkteaId);
     }
 
     @Override
-    public Single<CartItem> getItemInCart(String foodId, String uid) {
-        return cartDAO.getItemInCart(foodId, uid);
+    public Single<CartItem> getItemInCart(String foodId, String uid, String milkteaId) {
+        return cartDAO.getItemInCart(foodId, uid, milkteaId);
     }
 
     @Override
@@ -50,12 +50,12 @@ public class LocalCartDataSource implements CartDataSource {
     }
 
     @Override
-    public Single<Integer> cleanCart(String uid) {
-        return cartDAO.cleanCart(uid    );
+    public Single<Integer> cleanCart(String uid, String milkteaId) {
+        return cartDAO.cleanCart(uid, milkteaId);
     }
 
     @Override
-    public Single<CartItem> getItemWithAllOptionsInCart(String uid, String categoryId, String foodId, String foodSize, String foodAddon) {
-        return cartDAO.getItemWithAllOptionsInCart(uid,categoryId,foodId,foodSize,foodAddon);
+    public Single<CartItem> getItemWithAllOptionsInCart(String uid, String categoryId, String foodId, String foodSize, String foodAddon, String milkteaId) {
+        return cartDAO.getItemWithAllOptionsInCart(uid,categoryId,foodId,foodSize,foodAddon,milkteaId);
     }
 }

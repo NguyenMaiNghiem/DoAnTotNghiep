@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
 
+import com.nghiem.rilleyServer.Adapter.MyCustomMarkerAdapter;
 import com.nghiem.rilleyServer.Callback.ISingleShippingOrderCallbackListener;
 import com.nghiem.rilleyServer.Common.Common;
 import com.nghiem.rilleyServer.Model.ShippingOrderModel;
@@ -102,6 +103,8 @@ public class TrackingOrderActivity extends FragmentActivity implements OnMapRead
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setInfoWindowAdapter(new MyCustomMarkerAdapter(getLayoutInflater()));
+
 //        mMap.getUiSettings().setZoomControlsEnabled(true);
 //
 //        try {
@@ -118,7 +121,9 @@ public class TrackingOrderActivity extends FragmentActivity implements OnMapRead
 
     private void checkOrderFromFirebase() {
         FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.SHIPPING_ORDER_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.SHIPPING_ORDER_REF)
                 .child(Common.currentOrderSelected.getOrderNumber())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -173,9 +178,17 @@ public class TrackingOrderActivity extends FragmentActivity implements OnMapRead
 
             shipperMarker = mMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromBitmap(resized))
-                    .title(shippingOrderModel.getShipperName())
-                    .snippet(shippingOrderModel.getShipperPhone())
+                    .title(new StringBuilder("Shipper: ").append(shippingOrderModel.getShipperName()).toString())
+                    .snippet(new StringBuilder("Phone: ").append(shippingOrderModel.getShipperPhone())
+                            .append("\n")
+                            .append("Estimate Time Delivery: ")
+                            .append(shippingOrderModel.getEstimateTime()).toString()
+
+                    )
                     .position(locationShipper));
+
+            //Always show Information
+            shipperMarker.showInfoWindow();
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationShipper, 18));
         }
@@ -189,12 +202,14 @@ public class TrackingOrderActivity extends FragmentActivity implements OnMapRead
         String to = new StringBuilder()
                 .append(shippingOrderModel.getOrderModel().getLat())
                 .append(",")
-                .append(shippingOrderModel.getOrderModel().getLng()).toString();
+                .append(shippingOrderModel.getOrderModel().getLng())
+                .toString();
 
         String from = new StringBuilder()
                 .append(shippingOrderModel.getCurrentLat())
                 .append(",")
-                .append(shippingOrderModel.getCurrentLng()).toString();
+                .append(shippingOrderModel.getCurrentLng())
+                .toString();
 
         compositeDisposable.add(iGoogleAPI.getDirections("driving",
                 "less_driving",
@@ -231,7 +246,9 @@ public class TrackingOrderActivity extends FragmentActivity implements OnMapRead
 
     private void subscribeShipperMove(ShippingOrderModel shippingOrderModel) {
         shipperRef= FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.SHIPPING_ORDER_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.SHIPPING_ORDER_REF)
                 .child(shippingOrderModel.getKey());
 
         shipperRef.addValueEventListener(this);

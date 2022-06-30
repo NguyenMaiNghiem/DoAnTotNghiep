@@ -26,22 +26,22 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
-import com.nghiem.rilleyServer.Model.ShippingOrderModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
-import com.nghiem.rilleyServer.Model.AddonModel;
 import com.nghiem.rilleyServer.Model.BestDealsModel;
 import com.nghiem.rilleyServer.Model.CartItem;
 import com.nghiem.rilleyServer.Model.CategoryModel;
+import com.nghiem.rilleyServer.Model.DiscountModel;
 import com.nghiem.rilleyServer.Model.FoodModel;
 import com.nghiem.rilleyServer.Model.MostPopularModel;
 import com.nghiem.rilleyServer.Model.OrderModel;
 import com.nghiem.rilleyServer.Model.ServerUserModel;
 import com.nghiem.rilleyServer.Model.SizeModel;
+import com.nghiem.rilleyServer.Model.SugarModel;
 import com.nghiem.rilleyServer.Model.TokenModel;
 import com.nghiem.rilleyServer.R;
 
@@ -73,25 +73,18 @@ public class Common {
     public static final String KEY_CHAT_USER = "CHAT_SENDER";
     public static final String CHAT_DETAIL_REF = "ChatDetail";
     public static final String FILE_PRINT = "last_order_print.pdf";
-    public static ServerUserModel currentServerUser;
-    public static CategoryModel categorySelected;
-    public static ShippingOrderModel currentShippingOrder;
-
+    public static final String MILKTEA_REF = "Milktea";
     public static final int DEFAULT_COLUMN_COUNT = 0;
     public static final int FULL_WIDTH_COLUMN = 1;
-
-    public enum ACTION {
-        CREATE,
-        UPDATE,
-        DELETE
-    }
-
-
+    public static final String DISCOUNT = "Discount";
+    public static final String LOCATION_REF = "Location";
+    public static ServerUserModel currentServerUser;
+    public static CategoryModel categorySelected;
     public static FoodModel selectedFood;
     public static OrderModel currentOrderSelected;
     public static BestDealsModel bestDealsSelected;
     public static MostPopularModel mostPopularSelected;
-
+    public static DiscountModel discountSelected;
 
     public static void setSpanString(String welcome, String name, TextView textView) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -131,29 +124,23 @@ public class Common {
 
     public static String getFileName(ContentResolver contentResolver, Uri fileUri) {
         String result = null;
-
-
-                    if (fileUri.getScheme().equals("content")) {
-                        Cursor cursor = contentResolver.query(fileUri, null, null, null, null);
-                        try {
-                            if (cursor != null && cursor.moveToFirst())
-                                result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                        } finally {
-                            cursor.close();
-                        }
-                    }
-
-
-                    if (result == null) {
-                        result = fileUri.getPath();
-                        int cut = result.lastIndexOf('/');
-
-                        if (cut != -1)
-                            result = result.substring(cut + 1);
-                    }
-
-                    return result;
-                }
+        if (fileUri.getScheme().equals("content")) {
+            Cursor cursor = contentResolver.query(fileUri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst())
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = fileUri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1)
+                result = result.substring(cut + 1);
+        }
+        return result;
+    }
 
     public static void showNotification(Context context, int id, String title, String content, Intent intent) {
         PendingIntent pendingIntent = null;
@@ -219,7 +206,11 @@ public class Common {
     }
 
     public static String createTopicOrder() {
-        return new StringBuilder("/topics/new_order_nb").toString();
+        return new StringBuilder("/topics/")
+                .append(Common.currentServerUser.getMilktea())
+                .append("_")
+                .append("new_order")
+                .toString();
     }
 
     public static List<LatLng> decodePoly(String encoded) {
@@ -258,8 +249,13 @@ public class Common {
     }
 
     public static String getNewsTopic() {
-        return new StringBuilder("/topics/news").toString();
+        return new StringBuilder("/topics/")
+                .append(Common.currentServerUser.getMilktea())
+                .append("_")
+                .append("news")
+                .toString();
     }
+
     public static String getAppPath(Context context) {
         File dir = new File(android.os.Environment.getExternalStorageDirectory()
                 + File.separator
@@ -314,12 +310,18 @@ public class Common {
         else {
             StringBuilder stringBuilder = new StringBuilder();
             Gson gson = new Gson();
-            List<AddonModel> addonModels = gson.fromJson(foodAddOn, new TypeToken<List<AddonModel>>() {
+            List<SugarModel> sugarModels = gson.fromJson(foodAddOn, new TypeToken<List<SugarModel>>() {
             }.getType());
-            for (AddonModel addonModel : addonModels)
-                stringBuilder.append(addonModel.getName()).append(",");
+            for (SugarModel sugarModel : sugarModels)
+                stringBuilder.append(sugarModel.getName()).append(",");
             return stringBuilder.substring(0, stringBuilder.length() - 1); //Remove last ","
 
         }
+    }
+
+    public enum ACTION {
+        CREATE,
+        UPDATE,
+        DELETE
     }
 }

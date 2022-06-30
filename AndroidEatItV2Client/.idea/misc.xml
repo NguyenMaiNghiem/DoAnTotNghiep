@@ -39,17 +39,35 @@
         <entry key="..\:/AndroidEatItV2/AndroidEatItV2Client/app/src/main/res/menu/home.xml" value="0.346875" />
         <entry key="..\:/AndroidEatItV2/AndroidEatItV2Client/app/src/main/res/menu/search_menu.xml" value="0.346875" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/drawable/ic_baseline_chat_bubble_24.xml" value="0.1" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/drawable/ic_launcher_background.xml" value="0.157" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/drawable/ic_markunread_black_24dp.xml" value="0.1025" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/drawable/side_nav_bar.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/activity_chat.xml" value="0.1" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/activity_home.xml" value="0.23229166666666667" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/activity_main.xml" value="0.23229166666666667" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/activity_scan_qr.xml" value="0.1" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/activity_tracking_order.xml" value="0.23229166666666667" />
-        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/app_bar_home.xml" value="0.10358565737051793" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/app_bar_home.xml" value="0.2" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/content_home.xml" value="0.10358565737051793" />
-        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/fragment_home.xml" value="0.2296875" />
-        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_register.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/fragment_cart.xml" value="0.2" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/fragment_food_detail.xml" value="0.39285714285714285" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/fragment_food_list.xml" value="0.152" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/fragment_home.xml" value="0.21370967741935484" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/fragment_milk_tea.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/fragment_milktea.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_cart_item.xml" value="0.2150170648464164" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_marker_display.xml" value="0.2" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_message_picture.xml" value="0.264" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_message_text.xml" value="0.2" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_milktea.xml" value="0.152" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_order_detail_item.xml" value="0.16666666666666666" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_place_order.xml" value="0.2328125" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_popular_categories_item.xml" value="0.13994565217391305" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/layout_register.xml" value="0.264" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/layout/nav_header_home.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/menu/activity_home_drawer.xml" value="0.1" />
+        <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/menu/milktea_detail_menu.xml" value="0.1" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
         <entry key="..\:/DoAnTotNghiep/AndroidEatItV2Client/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
       </map>

@@ -2,6 +2,7 @@ package com.nghiem.rilleyShipper.ui.home;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,11 @@ import com.nghiem.rilleyShipper.adapter.MyShippingOrderAdapter;
 import com.nghiem.rilleyShipper.common.Common;
 import com.nghiem.rilleyShipper.databinding.FragmentHomeBinding;
 import com.nghiem.rilleyShipper.model.ShippingOrderModel;
+import com.nghiem.rilleyShipper.eventbus.UpdateShippingOrderEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -51,6 +57,7 @@ public class HomeFragment extends Fragment {
         });
         homeViewModel.getShippingOrderMutableData(Common.currentShipperUser.getPhone())
                 .observe(getViewLifecycleOwner(), shippingOrderModels -> {
+                    Log.i("data","co du lieu getShippingOrderMutableData:"+shippingOrderModels.toString());
                     shippingOrderModelList = shippingOrderModels;
                     adapter = new MyShippingOrderAdapter(getContext(), shippingOrderModels);
                     recycler_order.setAdapter(adapter);
@@ -75,5 +82,25 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (EventBus.getDefault().hasSubscriberForEvent(UpdateShippingOrderEvent.class))
+            EventBus.getDefault().removeStickyEvent(UpdateShippingOrderEvent.class);
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
+    public void onUpdateShippingOrder(UpdateShippingOrderEvent event)
+    {
+        homeViewModel.getShippingOrderMutableData(Common.currentShipperUser.getPhone());    //Update data
     }
 }

@@ -14,8 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.nghiem.rilleyClient.R;
+import com.google.android.material.textfield.TextInputLayout;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.common.api.Status;
@@ -37,10 +38,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 import com.nghiem.rilleyClient.Common.Common;
 import com.nghiem.rilleyClient.Model.UserModel;
 import com.nghiem.rilleyClient.Remote.ICloudFunctions;
@@ -66,7 +64,11 @@ public class MainActivity extends AppCompatActivity {
     private Place placeSelected;
     private AutocompleteSupportFragment places_fragment;
     private PlacesClient placesClient;
-    private List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
+    private List<Place.Field> placeFields = Arrays.asList(
+            Place.Field.ID,
+            Place.Field.NAME,
+            Place.Field.ADDRESS,
+            Place.Field.LAT_LNG);
 
     @Override
     protected void onStart() {
@@ -97,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
         Places.initialize(this, getString(R.string.google_maps_key));
         placesClient = Places.createClient(this);
 
-        providers = Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build()); //Phone Authentication (Sign In Method)
+        providers = Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build()   //Phone Authentication (Sign In Method)
+                ,new AuthUI.IdpConfig.EmailBuilder().build());                  //Email Authentication (Sign In Method)
 
         userRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.USER_REFERENCES);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -105,28 +108,38 @@ public class MainActivity extends AppCompatActivity {
         cloudFunctions = RetroFitCloudClient.getInstance().create(ICloudFunctions.class);
         listener = firebaseAuth -> {
 
-            Dexter.withContext(this)
-                    .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                    .withListener(new PermissionListener() {
+            Dexter.withActivity(this)
+                    .withPermissions(
+                            Arrays.asList(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA)
+                    )
+                    .withListener(new MultiplePermissionsListener() {
                         @Override
-                        public void onPermissionGranted(PermissionGrantedResponse response) {
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            if (user != null) {
-                                //Firebase Authentication Successful
-                                checkUserFromFirebase(user);
-                            } else {
-                                phoneLogin();
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            if (report.areAllPermissionsGranted())
+                            {
+                                FirebaseUser user = firebaseAuth.getCurrentUser();
+                                if (user != null) {
+                                    //Firebase Authentication Successful
+                                    checkUserFromFirebase(user);
+                                } else {
+                                    phoneLogin();
+                                }
                             }
+                            else
+                                Toast.makeText(MainActivity.this, "Bạn cần phải chấp nhận toàn bộ quyền yêu cầu để sử dụng ứng dụng", Toast.LENGTH_SHORT).show();
+
                         }
 
                         @Override
-                        public void onPermissionDenied(PermissionDeniedResponse response) {
-                            Toast.makeText(MainActivity.this, "You must enable this permission to use app", Toast.LENGTH_SHORT).show();
-                        }
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
 
-                        @Override
-                        public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
-                    }).check();
+                        }
+                    })
+                    .check();
 
 
         };
@@ -168,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setMessage("Please fill information");
 
         View itemView = LayoutInflater.from(this).inflate(R.layout.layout_register, null);
+        TextInputLayout phone_input_layout = (TextInputLayout)itemView.findViewById(R.id.phone_input_layout);
         EditText edt_name = (EditText) itemView.findViewById(R.id.edt_name);
         EditText edt_address = (EditText) itemView.findViewById(R.id.edt_address);
         EditText edt_phone = (EditText) itemView.findViewById(R.id.edt_phone);
@@ -188,8 +202,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Set
-        edt_phone.setText(user.getPhoneNumber());
+        //Set Data
+        if (user.getPhoneNumber() == null || TextUtils.isEmpty(user.getPhoneNumber()))
+        {
+            phone_input_layout.setHint("Email");
+            edt_phone.setText(user.getEmail());
+            edt_name.setText(user.getDisplayName());
+        }else
+            edt_phone.setText(user.getPhoneNumber());
 
         builder.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
         builder.setPositiveButton("REGISTER", (dialog, which) -> {
@@ -198,9 +218,6 @@ public class MainActivity extends AppCompatActivity {
 //            {
                 if (TextUtils.isEmpty(edt_name.getText().toString())) {
                     Toast.makeText(MainActivity.this, "Please enter your name", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (TextUtils.isEmpty(edt_address.getText().toString())) {
-                    Toast.makeText(MainActivity.this, "Please enter your address", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -214,21 +231,31 @@ public class MainActivity extends AppCompatActivity {
 
 
                 userRef.child(user.getUid()).setValue(userModel)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    //Successful Update of User Detail to Firebase Database
-                                    dialog.dismiss();
-                                    Toast.makeText(MainActivity.this, "Congratulation! Register Success", Toast.LENGTH_SHORT).show();
-                                    goToHomeActivity(userModel);
-                                }
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                //Successful Update of User Detail to Firebase Database
+                                dialog.dismiss();
+                                Toast.makeText(MainActivity.this, "Congratulation! Register Success", Toast.LENGTH_SHORT).show();
+                                goToHomeActivity(userModel);
+
+//                                    FirebaseAuth.getInstance().getCurrentUser()
+//                                            .getIdToken(true)
+//                                            .addOnFailureListener(e -> {
+//                                                Toast.makeText(MainActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show(); })
+//                                            .addOnCompleteListener(task1 -> {
+//                                                Common.authorizeKey = token;
+//                                                Map<String,String> header;
+//                                                header.put("AuthorizeKey");
+//                                                compositeDisposable.add()
+//                                            })
+
                             }
                         });
 //            }
 //            else
 //            {
 //                Toast.makeText(this, "Please select Address!", Toast.LENGTH_SHORT).show();
+//                return;
 //            }
         });
 
@@ -283,10 +310,6 @@ public class MainActivity extends AppCompatActivity {
 //                    finish();
 //        });
 
-//        Common.currentUser = userModel; //Important, You always needs to assign this value before going to Home.
-//        startActivity(new Intent(MainActivity.this, HomeActivity.class));
-//        finish();
-
     }
 
     @Override
@@ -310,9 +333,13 @@ public class MainActivity extends AppCompatActivity {
     private void phoneLogin() {
 
         // Create and launch sign-in intent
-        startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
-                        .setAvailableProviders(providers).build()
-                , APP_REQUEST_CODE);
+        startActivityForResult(AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setLogo(R.drawable.anhdaidien)
+                        .setTheme(R.style.LoginTheme)
+                        .setAvailableProviders(providers)
+                        .build()
+                ,APP_REQUEST_CODE);
 
     }
 }

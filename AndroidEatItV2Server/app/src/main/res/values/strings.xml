@@ -24,5 +24,7 @@
     <string name="title_activity_tracking_order">Map</string>
     <string name="action_create">Add Category</string>
     <string name="app_admin">App Admin</string>
+    <string name="menu_discount">Discount</string>
+    <string name="menu_location">Location</string>
 
 </resources>

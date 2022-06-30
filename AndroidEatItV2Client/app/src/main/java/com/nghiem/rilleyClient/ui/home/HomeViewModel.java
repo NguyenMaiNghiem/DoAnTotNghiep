@@ -31,32 +31,35 @@ public class HomeViewModel extends ViewModel implements IPopularCallbackListener
         bestDealCallbackListener = this;
     }
 
-    public MutableLiveData<List<PopularCategoryModel>> getPopularList() {
+    public MutableLiveData<List<PopularCategoryModel>> getPopularList(String key) {
 
         if(popularList == null)
         {
             popularList = new MutableLiveData<>();
             messageError = new MutableLiveData<>();
-            loadPopularList();
+            loadPopularList(key);
         }
 
         return popularList;
     }
 
-    public MutableLiveData<List<BestDealModel>> getBestDealList() {
+    public MutableLiveData<List<BestDealModel>> getBestDealList(String key) {
         if(bestDealList == null)
         {
             bestDealList = new MutableLiveData<>();
             messageError = new MutableLiveData<>();
-            loadBestDealList();
+            loadBestDealList(key);
         }
 
         return bestDealList;
     }
 
-    private void loadBestDealList() {
+    private void loadBestDealList(String key) {
         List<BestDealModel> tempList = new ArrayList<>();
-        DatabaseReference bestDealRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.BEST_DEALS_REF);
+        DatabaseReference bestDealRef = FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentMilktea.getUid())
+                .child(Common.BEST_DEALS_REF);
         bestDealRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -75,9 +78,12 @@ public class HomeViewModel extends ViewModel implements IPopularCallbackListener
         });
     }
 
-    private void loadPopularList() {
+    private void loadPopularList(String key) {
         List<PopularCategoryModel> tempList = new ArrayList<>();
-        DatabaseReference popularRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.POPULAR_CATEGORY_REF);
+        DatabaseReference popularRef = FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentMilktea.getUid())
+                .child(Common.POPULAR_CATEGORY_REF);
         popularRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

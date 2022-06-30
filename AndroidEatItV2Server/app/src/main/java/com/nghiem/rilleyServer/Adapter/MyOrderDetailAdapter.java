@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.nghiem.rilleyServer.Model.AddonModel;
+import com.nghiem.rilleyServer.Model.SugarModel;
 import com.nghiem.rilleyServer.Model.CartItem;
 import com.nghiem.rilleyServer.Model.SizeModel;
 import com.nghiem.rilleyServer.R;
@@ -73,13 +73,13 @@ public class MyOrderDetailAdapter extends RecyclerView.Adapter<MyOrderDetailAdap
 
         if(!cartItemList.get(position).getFoodAddOn().equals("Default"))
         {
-            List<AddonModel> addonModels = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<List<AddonModel>>(){}.getType());
+            List<SugarModel> sugarModels = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<List<SugarModel>>(){}.getType());
 
             StringBuilder addonString = new StringBuilder();
-            if(addonModels!=null)
+            if(sugarModels !=null)
             {
-                for(AddonModel addonModel : addonModels)
-                    addonString.append(addonModel.getName()).append(",");
+                for(SugarModel sugarModel : sugarModels)
+                    addonString.append(sugarModel.getName()).append(",");
 
                 addonString.delete(addonString.length()-1, addonString.length()); //Remove "," last
                 holder.txt_food_add_on.setText(new StringBuilder("Add On: ").append(addonString));

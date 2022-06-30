@@ -47,8 +47,12 @@ public class HomeViewModel extends ViewModel implements IshippingOrderCallbackLi
 
     public void loadOrderByShipper(String shipperPhone){
         List<ShippingOrderModel> tempList = new ArrayList<>();
-        DatabaseReference shipperRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.SHIPPER_ORDER_REF);
-        Query orderRef = shipperRef.orderByChild("shipperPhone").equalTo(Common.currentShipperUser.getPhone());
+        Query orderRef = FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentMilktea.getUid())
+                .child(Common.SHIPPER_ORDER_REF)
+                .orderByChild("shipperPhone")
+                .equalTo(Common.currentShipperUser.getPhone());
 
         orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

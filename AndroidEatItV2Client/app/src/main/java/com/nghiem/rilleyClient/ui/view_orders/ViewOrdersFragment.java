@@ -94,7 +94,10 @@ public class ViewOrdersFragment extends Fragment implements ILoadOrderCallbackLi
     private void loadOrdersFromFirebase() {
         List<OrderModel> orderList = new ArrayList<>();
 
-        FirebaseDatabase.getInstance(Common.URL).getReference(Common.ORDER_REF)
+        FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentMilktea.getUid())
+                .child(Common.ORDER_REF)
                 .orderByChild("userId")
                 .equalTo(Common.currentUser.getUid())
                 .limitToLast(100)
@@ -148,7 +151,9 @@ public class ViewOrdersFragment extends Fragment implements ILoadOrderCallbackLi
                                             Map<String, Object> update_data = new HashMap<>();
                                             update_data.put("orderStatus", -1); //Cancel Order
                                             FirebaseDatabase.getInstance(Common.URL)
-                                                    .getReference(Common.ORDER_REF)
+                                                    .getReference(Common.MILKTEA_REF)
+                                                    .child(Common.currentMilktea.getUid())
+                                                    .child(Common.ORDER_REF)
                                                     .child(orderModel.getOrderNumber())
                                                     .updateChildren(update_data)
                                                     .addOnFailureListener(e -> {
@@ -182,7 +187,9 @@ public class ViewOrdersFragment extends Fragment implements ILoadOrderCallbackLi
 
                             //Fetch from Firebase
                             FirebaseDatabase.getInstance(Common.URL)
-                                    .getReference(Common.SHIPPING_ORDER_REF) //Copy from Shipper App
+                                    .getReference(Common.MILKTEA_REF)
+                                    .child(Common.currentMilktea.getUid())
+                                    .child(Common.SHIPPING_ORDER_REF) //Copy from Shipper App
                                     .child(orderModel.getOrderNumber())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -220,7 +227,8 @@ public class ViewOrdersFragment extends Fragment implements ILoadOrderCallbackLi
                                     .getItemAtPosition(pos);
                             dialog.show();
 
-                            cartDataSource.cleanCart(Common.currentUser.getUid())
+                            cartDataSource.cleanCart(Common.currentUser.getUid(),
+                                    Common.currentMilktea.getUid())
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(new SingleObserver<Integer>() {
@@ -290,4 +298,6 @@ public class ViewOrdersFragment extends Fragment implements ILoadOrderCallbackLi
         compositeDisposable.clear();
         super.onStop();
     }
+
+
 }

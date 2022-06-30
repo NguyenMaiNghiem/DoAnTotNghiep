@@ -38,7 +38,10 @@ public class MostPopularViewModel extends ViewModel implements IMostPopularCallb
 
     public void loadMostPopular() {
         List<MostPopularModel> tempList = new ArrayList<>();
-        DatabaseReference mostPopularRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.MOST_POPULAR);
+        DatabaseReference mostPopularRef = FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.MOST_POPULAR);
 
         mostPopularRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

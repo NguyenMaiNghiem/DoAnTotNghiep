@@ -5,8 +5,13 @@ import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
-@Entity(tableName = "Cart", primaryKeys ={"uid","categoryId", "foodId", "foodAddon", "foodSize"})
+@Entity(tableName = "Cart", primaryKeys ={"uid","categoryId", "foodId", "foodAddon", "foodSize","milkteaId"})
 public class CartItem {
+
+    @NonNull
+    @ColumnInfo(name = "milkteaId")
+    private String milkteaId;
+
     @NonNull
     @ColumnInfo(name = "categoryId")
     private String categoryId;
@@ -44,6 +49,15 @@ public class CartItem {
     @NonNull
     @ColumnInfo(name = "uid")
     private String uid;
+
+    @NonNull
+    public String getMilkteaId() {
+        return milkteaId;
+    }
+
+    public void setMilkteaId(@NonNull String milkteaId) {
+        this.milkteaId = milkteaId;
+    }
 
     @NonNull
     public String getFoodId() {

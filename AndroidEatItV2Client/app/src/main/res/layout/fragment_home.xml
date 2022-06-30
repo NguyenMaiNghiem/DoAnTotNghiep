@@ -2,93 +2,95 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="4dp">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="5">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:orientation="vertical"
-        android:padding="8dp">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="Currently delivery is available only in Silicon City"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="Minimum Order Value should be ₹500"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="100% Veg. and Eggless Bakery"
-            android:textColor="#4CAF50"
-            android:textSize="18sp"
-            android:textStyle="bold|italic" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/brandon_medium"
-            android:text="@string/popular_categories"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_popular"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-
-    </LinearLayout>
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="10dp"
-                android:fontFamily="@font/brandon_medium"
-                android:text="@string/best_deals"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:padding="8dp">
 
-            <com.asksira.loopingviewpager.LoopingViewPager
-                android:id="@+id/viewPager"
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bạn uống gì"
+                    android:textStyle="bold"
+                    android:textColor="#19DF3A"
+                    android:gravity="center"
+                    android:textSize="20sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rilley lo"
+                    android:textColor="#09B1E4"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/brandon_medium"
+                    android:text="@string/popular_categories"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_popular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                app:autoScroll="true"
-                app:isInfinite="true"
-                app:scrollInterval="5000"
-                app:viewpagerAspectRatio="1.33" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/brandon_medium"
+                    android:text="@string/best_deals"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <com.asksira.loopingviewpager.LoopingViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    app:autoScroll="true"
+                    app:isInfinite="true"
+                    app:scrollInterval="5000"
+                    app:viewpagerAspectRatio="1.33"
+                    android:layout_marginTop="5dp"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"/>
 
         </LinearLayout>
 
+    </ScrollView>
 
-    </LinearLayout>
 
 </RelativeLayout>

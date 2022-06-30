@@ -43,7 +43,10 @@ public class MenuViewModel extends ViewModel implements ICategoryCallbackListene
 
     public void loadCategories() {
         List<CategoryModel> tempList = new ArrayList<>();
-        DatabaseReference categoryRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.CATEGORY_REF);
+        DatabaseReference categoryRef = FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentMilktea.getUid())
+                .child(Common.CATEGORY_REF);
         categoryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

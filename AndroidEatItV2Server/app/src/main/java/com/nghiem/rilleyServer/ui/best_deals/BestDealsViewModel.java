@@ -38,7 +38,10 @@ public class BestDealsViewModel extends ViewModel implements IBestDealsCallbackL
 
     public void loadBestDeals() {
         List<BestDealsModel> tempList = new ArrayList<>();
-        DatabaseReference bestDealsRef = FirebaseDatabase.getInstance(Common.URL).getReference(Common.BEST_DEALS);
+        DatabaseReference bestDealsRef = FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.BEST_DEALS);
 
         bestDealsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -1,10 +1,10 @@
 package com.nghiem.rilleyServer.Model;
 
-public class AddonModel {
+public class SugarModel {
     private String name;
     private Long price;
 
-    public AddonModel() {
+    public SugarModel() {
     }
 
     public String getName() {

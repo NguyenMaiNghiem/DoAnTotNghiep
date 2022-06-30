@@ -35,12 +35,12 @@ import com.bumptech.glide.Glide;
 import com.nghiem.rilleyServer.Adapter.MyFoodListAdapter;
 import com.nghiem.rilleyServer.Common.Common;
 import com.nghiem.rilleyServer.Common.MySwipeHelper;
-import com.nghiem.rilleyServer.EventBus.AddonSizeEditEvent;
+import com.nghiem.rilleyServer.EventBus.SugarSizeEditEvent;
 import com.nghiem.rilleyServer.EventBus.ChangeMenuClick;
 import com.nghiem.rilleyServer.EventBus.ToastEvent;
 import com.nghiem.rilleyServer.Model.FoodModel;
 import com.nghiem.rilleyServer.R;
-import com.nghiem.rilleyServer.SizeAddonEditActivity;
+import com.nghiem.rilleyServer.SizeAndSugarEditActivity;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -227,26 +227,26 @@ public class FoodListFragment extends Fragment {
                       Common.selectedFood = foodModelList.get(pos);
                     else
                         Common.selectedFood = foodModel;
-                    startActivity(new Intent(getContext(), SizeAddonEditActivity.class));
+                    startActivity(new Intent(getContext(), SizeAndSugarEditActivity.class));
 
                     //Change Pos
                     if(foodModel.getPositionInList()==-1)
-                         EventBus.getDefault().postSticky(new AddonSizeEditEvent(false, pos));
+                         EventBus.getDefault().postSticky(new SugarSizeEditEvent(false, pos));
                     else
-                        EventBus.getDefault().postSticky(new AddonSizeEditEvent(false, foodModel.getPositionInList()));
+                        EventBus.getDefault().postSticky(new SugarSizeEditEvent(false, foodModel.getPositionInList()));
                 }));
-                buf.add(new MyButton(getContext(), "Addon", 30, 0, Color.parseColor("#336699"), pos -> {
+                buf.add(new MyButton(getContext(), "Đường", 30, 0, Color.parseColor("#336699"), pos -> {
                     FoodModel foodModel = adapter.getItemAtPosition(pos);
                     if(foodModel.getPositionInList()==-1)
                         Common.selectedFood = foodModelList.get(pos);
                     else
                         Common.selectedFood = foodModel;
-                    startActivity(new Intent(getContext(), SizeAddonEditActivity.class));
+                    startActivity(new Intent(getContext(), SizeAndSugarEditActivity.class));
                     //Change Position
                     if(foodModel.getPositionInList()==-1)
-                        EventBus.getDefault().postSticky(new AddonSizeEditEvent(true, pos));
+                        EventBus.getDefault().postSticky(new SugarSizeEditEvent(true, pos));
                     else
-                        EventBus.getDefault().postSticky(new AddonSizeEditEvent(true, foodModel.getPositionInList()));
+                        EventBus.getDefault().postSticky(new SugarSizeEditEvent(true, foodModel.getPositionInList()));
                 }));
             }
         };
@@ -262,8 +262,8 @@ public class FoodListFragment extends Fragment {
 
     private void showAddDialog() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
-        builder.setTitle("Create");
-        builder.setMessage("Please fill information");
+        builder.setTitle("Thêm Sản Phẩm Mới");
+        builder.setMessage("Vui lòng điền đầy đủ thông tin");
 
         View itemView = LayoutInflater.from(getContext()).inflate(R.layout.layout_update_food, null);
         EditText edt_food_name = (EditText) itemView.findViewById(R.id.edt_food_name);
@@ -292,6 +292,7 @@ public class FoodListFragment extends Fragment {
         builder.setPositiveButton("CREATE", (dialogInterface, which) -> {
             FoodModel updateFood = new FoodModel();
             updateFood.setName(edt_food_name.getText().toString());
+            updateFood.setId(UUID.randomUUID().toString());
             updateFood.setDescription(edt_food_description.getText().toString());
             updateFood.setPrice(TextUtils.isEmpty(edt_food_price.getText().toString()) ? 0 :
                     Long.parseLong(edt_food_price.getText().toString()));
@@ -323,7 +324,7 @@ public class FoodListFragment extends Fragment {
                         })
 
                         .addOnProgressListener(taskSnapshot -> {
-                            //Don't Worry about this Erro
+                            //Don't Worry about this Error
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
                             dialog.setMessage(new StringBuilder("Uploading: ").append(progress).append("%"));
 
@@ -341,8 +342,6 @@ public class FoodListFragment extends Fragment {
         builder.setView(itemView);
         android.app.AlertDialog updateDialog = builder.create();
         updateDialog.show();
-
-
     }
 
 
@@ -415,7 +414,7 @@ public class FoodListFragment extends Fragment {
                         })
 
                         .addOnProgressListener(taskSnapshot -> {
-                            //Don't Worry about this Erro
+                            //Don't Worry about this Error
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
                             dialog.setMessage(new StringBuilder("Uploading: ").append(progress).append("%"));
 
@@ -454,7 +453,9 @@ public class FoodListFragment extends Fragment {
         updateData.put("foods", foods);
 
         FirebaseDatabase.getInstance(Common.URL)
-                .getReference(Common.CATEGORY_REF)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentServerUser.getMilktea())
+                .child(Common.CATEGORY_REF)
                 .child(Common.categorySelected.getMenu_id())
                 .updateChildren(updateData)
                 .addOnFailureListener(e -> {

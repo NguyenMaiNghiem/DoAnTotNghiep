@@ -45,14 +45,16 @@ public class HomeFragment extends Fragment {
 
         unbinder = ButterKnife.bind(this, root);
 
+        String key = getArguments().getString("milktea");
+
         init();
 
-        homeViewModel.getPopularList().observe(this, popularCategoryModels -> {
+        homeViewModel.getPopularList(key).observe(this, popularCategoryModels -> {
             MyPopularCategoriesAdapter adapter = new MyPopularCategoriesAdapter(getContext(), popularCategoryModels);
             recycler_popular.setAdapter(adapter);
         });
 
-        homeViewModel.getBestDealList().observe(this, bestDealModels -> {
+        homeViewModel.getBestDealList(key).observe(this, bestDealModels -> {
             MyBestDealsAdapter adapter = new MyBestDealsAdapter(getContext(), bestDealModels, true);
             viewPager.setAdapter(adapter);
         });

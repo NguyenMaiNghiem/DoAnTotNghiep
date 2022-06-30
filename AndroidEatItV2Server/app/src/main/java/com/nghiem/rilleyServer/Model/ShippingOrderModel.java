@@ -1,11 +1,19 @@
 package com.nghiem.rilleyServer.Model;
 
 public class ShippingOrderModel {
-    private String key, shipperPhone, shipperName;
+    private String key, shipperPhone, shipperName, milkteaKey;
     private double currentLat, currentLng;
     private OrderModel orderModel;
     private boolean isStartTrip;
     private String estimateTime;
+
+    public String getMilkteaKey() {
+        return milkteaKey;
+    }
+
+    public void setMilkteaKey(String milkteaKey) {
+        this.milkteaKey = milkteaKey;
+    }
 
     public ShippingOrderModel() {
     }

@@ -102,7 +102,7 @@ public class MenuFragment extends Fragment {
             }
         });
 
-        //Clear TExt when clikc toClear button on Search View
+        //Clear TExt when click toClear button on Search View
         ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
