@@ -43,6 +43,10 @@ import com.nghiem.rilleyServer.Callback.ILoadTimeFromFirebaseListener;
 import com.nghiem.rilleyServer.Common.Common;
 import com.nghiem.rilleyServer.Model.ChatInfoModel;
 import com.nghiem.rilleyServer.Model.ChatMessageModel;
+import com.nghiem.rilleyServer.Model.FCMSendData;
+import com.nghiem.rilleyServer.Model.TokenModel;
+import com.nghiem.rilleyServer.remote.IFCMService;
+import com.nghiem.rilleyServer.remote.RetrofitFCMClient;
 import com.nghiem.rilleyServer.viewholder.ChatPictureHolder;
 import com.nghiem.rilleyServer.viewholder.ChatTextHolder;
 
@@ -59,10 +63,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class ChatDetailActivity extends AppCompatActivity implements ILoadTimeFromFirebaseListener {
 
     private static final int MY_CAMERA_REQUEST_CODE = 7171;
     private static final int MY_RESULT_LOAD_IMG = 7172;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    IFCMService ifcmService;
 
     private String roomId,chatSender;
 
@@ -89,6 +100,8 @@ public class ChatDetailActivity extends AppCompatActivity implements ILoadTimeFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_detail);
 
+        ifcmService = RetrofitFCMClient.getInstance().create(IFCMService.class);
+
         initViews();
         loadChatContent();
     }
@@ -104,6 +117,8 @@ public class ChatDetailActivity extends AppCompatActivity implements ILoadTimeFr
     protected void onStop() {
         if (adapter != null)
             adapter.stopListening();
+
+        compositeDisposable.clear();
         super.onStop();
     }
 
@@ -354,6 +369,10 @@ public class ChatDetailActivity extends AppCompatActivity implements ILoadTimeFr
                         if (dataSnapshot.exists())
                         {
                             appendChat(chatMessageModel,isPicture,estimateTimeInMs);
+
+//                            String titleToAdmin = "Có tin nhắn mới";
+//                            String contentToAdmin = "Bạn vừa nhận được 1 tin nhắn từ Admin";
+//                            sendNotificationtoUser(titleToAdmin,contentToAdmin);
                         }
                         else
                         {
@@ -369,6 +388,26 @@ public class ChatDetailActivity extends AppCompatActivity implements ILoadTimeFr
                 });
 
     }
+
+//    private void sendNotificationtoUser(String title , String content){
+//        Map<String, String> notiData = new HashMap<>();
+//        notiData.put(Common.NOTI_TITLE, title);
+//        notiData.put(Common.NOTI_CONTENT, content);
+//
+//        FCMSendData sendData =
+//                new FCMSendData(Common.createTopicOrder(), notiData);
+//
+//        compositeDisposable.add(ifcmService.sendNotification(sendData)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(fcmResponse -> {
+//                    //Clean Success
+//                    Toast.makeText(ChatDetailActivity.this, "Đã gửi thông báo đến User", Toast.LENGTH_SHORT).show();
+//                }, throwable -> {
+//                    Toast.makeText(ChatDetailActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+//                })
+//        );
+//    }
 
     private void appendChat(ChatMessageModel chatMessageModel, boolean isPicture, long estimateTimeInMs) {
         Map<String,Object> update_data = new HashMap<>();

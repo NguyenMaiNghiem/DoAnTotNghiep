@@ -218,6 +218,7 @@ public class ShippingActivity extends FragmentActivity implements OnMapReadyCall
                                     update_data.put("currentLat", location.getLatitude());
                                     update_data.put("currentLng", location.getLongitude());
                                     update_data.put("estimateTime", estimateTime);
+                                    update_data.put("startTrip", true);
 
                                     FirebaseDatabase.getInstance(Common.URL)
                                             .getReference(Common.MILKTEA_REF)
@@ -226,7 +227,19 @@ public class ShippingActivity extends FragmentActivity implements OnMapReadyCall
                                             .child(shippingOrderModel.getKey())
                                             .updateChildren(update_data)
                                             .addOnFailureListener(e -> Toast.makeText(ShippingActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show())
-                                            .addOnSuccessListener(unused -> drawRoutes(data));
+                                            .addOnSuccessListener(unused -> {
+                                                drawRoutes(data);
+                                                String title ="Đơn hàng của bạn bắt đầu giao";
+                                                String content = "Đơn hàng của bạn bắt đầu giao bởi shipper ";
+                                                String titleToAdmin = "Đơn hàng của bạn đã bắt đầu giao";
+                                                String contentToAdmin = new StringBuilder("Đơn hàng ")
+                                                        .append(shippingOrderModel.getKey())
+                                                        .append("đã bắt đầu giao bởi shipper ").toString();
+
+                                                sendNotificationtoUser(title,content);
+                                                sendNotificationtoAdmin(titleToAdmin,contentToAdmin);
+                                                updateStateShipper(false);
+                                            });
 
                                 }, throwable -> {
                                     Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
@@ -320,58 +333,14 @@ public class ShippingActivity extends FragmentActivity implements OnMapReadyCall
 
                                                     //Delete done
                                                     //We will get token and send notification for user
-                                                    FirebaseDatabase.getInstance(Common.URL)
-                                                            .getReference(Common.TOKEN_REF)
-                                                            .child(shippingOrderModel.getOrderModel().getUserId())
-                                                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                                    if (dataSnapshot.exists()) {
-                                                                        TokenModel tokenModel = dataSnapshot.getValue(TokenModel.class);
-                                                                        Map<String, String> notidata = new HashMap<>();
-                                                                        notidata.put(Common.NOTI_TITLE, "Your order have been shipped ");
-                                                                        notidata.put(Common.NOTI_CONTENT, new StringBuilder("Your order have been shipped by shipper ")
-                                                                                .append(Common.currentShipperUser.getPhone()).toString()
-                                                                        );
-
-                                                                        FCMSendData sendData = new FCMSendData(tokenModel.getToken(), notidata);
-
-                                                                        compositeDisposable.add(ifcmService.sendNotification(sendData)
-                                                                                .subscribeOn(Schedulers.io())
-                                                                                .observeOn(AndroidSchedulers.mainThread())
-                                                                                .subscribe(fcmResponse -> {
-                                                                                    dialog1.dismiss();
-                                                                                    if (fcmResponse.getSuccess() == 1) {
-                                                                                        Toast.makeText(ShippingActivity.this, "Finish!", Toast.LENGTH_SHORT).show();
-                                                                                    } else {
-                                                                                        Toast.makeText(ShippingActivity.this, "Update order success! But failed to send notification!", Toast.LENGTH_SHORT).show();
-                                                                                    }
-
-                                                                                    if (!TextUtils.isEmpty(Paper.book().read(Common.TRIP_START)))
-                                                                                        Paper.book().delete(Common.TRIP_START);
-                                                                                    EventBus.getDefault().postSticky(new UpdateShippingOrderEvent());
-                                                                                    finish();
-
-                                                                                }, throwable -> {
-                                                                                    dialog1.dismiss();
-                                                                                    Toast.makeText(ShippingActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                                                                                })
-
-                                                                        );
-                                                                    } else {
-                                                                        dialog1.dismiss();
-                                                                        Toast.makeText(ShippingActivity.this, "Token Not found!", Toast.LENGTH_SHORT).show();
-                                                                    }
-                                                                }
-
-                                                                @Override
-                                                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                                                    dialog1.dismiss();
-                                                                    Toast.makeText(ShippingActivity.this, "" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                                                                }
-                                                            });
-
-
+                                                    String titleToUser = "Đơn hàng của bạn đã được giao thành công";
+                                                    String contentToUser = "Đơn hàng của bạn đã được giao thành công bởi shipper ";
+                                                    String titleToAdmin = "Đơn hàng của bạn đã được giao thành công";
+                                                    String contentToAdmin = "Đơn hàng của bạn đã được giao thành công bởi shipper ";
+                                                    sendNotificationtoUser(titleToUser,contentToUser);
+                                                    sendNotificationtoAdmin(titleToAdmin,contentToAdmin);
+                                                    updateStateShipper(true);
+                                                    dialog1.dismiss();
                                                 });
 
                                     });
@@ -388,6 +357,96 @@ public class ShippingActivity extends FragmentActivity implements OnMapReadyCall
 //        Paper.book().delete(Common.TRIP_START);
 //        Paper.book().delete(Common.SHIPPER_ORDER_DATA);
 
+    }
+
+    private void updateStateShipper(boolean state) {
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("active",state); //Get STate of button, Shipper
+        FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.MILKTEA_REF)
+                .child(Common.currentMilktea.getUid())
+                .child(Common.SHIPPER_REF)
+                .child(Common.currentShipperUser.getUid())
+                .updateChildren(updateData)
+                .addOnFailureListener(e -> {
+                    Toast.makeText(ShippingActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                })
+                .addOnSuccessListener(aVoid -> Toast.makeText(ShippingActivity.this, "Update state to " + state, Toast.LENGTH_SHORT).show());
+    }
+
+    private void sendNotificationtoUser(String title , String content){
+        FirebaseDatabase.getInstance(Common.URL)
+                .getReference(Common.TOKEN_REF)
+                .child(shippingOrderModel.getOrderModel().getUserId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            TokenModel tokenModel = dataSnapshot.getValue(TokenModel.class);
+                            Map<String, String> notidata = new HashMap<>();
+                            notidata.put(Common.NOTI_TITLE, title);
+                            notidata.put(Common.NOTI_CONTENT, new StringBuilder(content)
+                                    .append(Common.currentShipperUser.getName()).toString()
+                            );
+
+                            FCMSendData sendData = new FCMSendData(tokenModel.getToken(), notidata);
+
+                            compositeDisposable.add(ifcmService.sendNotification(sendData)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(fcmResponse -> {
+                                        if (title == "Đơn hàng của bạn đã được giao thành công")
+                                        {
+                                            if (fcmResponse.getSuccess() == 1) {
+                                                Toast.makeText(ShippingActivity.this, "Finish!", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(ShippingActivity.this, "Update order success! But failed to send notification!", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                            if (!TextUtils.isEmpty(Paper.book().read(Common.TRIP_START)))
+                                                Paper.book().delete(Common.TRIP_START);
+                                            EventBus.getDefault().postSticky(new UpdateShippingOrderEvent());
+                                            finish();
+                                        }
+
+
+                                    }, throwable -> {
+                                        Toast.makeText(ShippingActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    })
+
+                            );
+                        } else {
+                            Toast.makeText(ShippingActivity.this, "Token Not found!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(ShippingActivity.this, "" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void sendNotificationtoAdmin(String title , String content){
+        Map<String, String> notiData = new HashMap<>();
+        notiData.put(Common.NOTI_TITLE, title);
+        notiData.put(Common.NOTI_CONTENT, new StringBuilder(content)
+                .append(Common.currentShipperUser.getName())
+                .append("bắt đã đầu giao").toString());
+
+        FCMSendData sendData =
+                new FCMSendData(Common.createTopicOrder(), notiData);
+
+        compositeDisposable.add(ifcmService.sendNotification(sendData)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(fcmResponse -> {
+                    //Clean Success
+                    Toast.makeText(ShippingActivity.this, "Đã gửi thông báo đến Admin", Toast.LENGTH_SHORT).show();
+                }, throwable -> {
+                    Toast.makeText(ShippingActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                })
+        );
     }
 
     private void setupAutoCompletePlaces() {

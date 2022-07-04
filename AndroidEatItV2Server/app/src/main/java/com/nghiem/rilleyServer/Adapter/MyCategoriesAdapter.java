@@ -71,7 +71,10 @@ public class MyCategoriesAdapter extends RecyclerView.Adapter<MyCategoriesAdapte
 
     @Override
     public int getItemCount() {
-        return categoryModelList.size();
+        if (categoryModelList != null)
+            return categoryModelList.size();
+        else
+            return 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

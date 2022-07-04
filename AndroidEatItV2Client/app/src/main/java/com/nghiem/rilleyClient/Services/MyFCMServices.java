@@ -1,5 +1,6 @@
 package com.nghiem.rilleyClient.Services;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
@@ -12,6 +13,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.nghiem.rilleyClient.Common.Common;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.nghiem.rilleyClient.MainActivity;
 
 import java.util.Map;
 import java.util.Random;
@@ -21,8 +23,7 @@ public class MyFCMServices extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
        Map<String, String> dataRecv = remoteMessage.getData();
 
-       if(dataRecv!=null)
-       {
+       if(dataRecv!=null) {
            if(dataRecv.get(Common.IS_SEND_IMAGE)!=null &&
                 dataRecv.get(Common.IS_SEND_IMAGE).equals("true"))
            {
@@ -44,8 +45,19 @@ public class MyFCMServices extends FirebaseMessagingService {
                    }
                });
            }
-           else
+           else if (dataRecv.get(Common.NOTI_TITLE).equals("Đơn hàng của bạn đã được cập nhật")
+                   || dataRecv.get(Common.NOTI_TITLE).equals("Đơn hàng của bạn đã được giao thành công")
+                   || dataRecv.get(Common.NOTI_TITLE).equals("Đơn hàng của bạn bắt đầu giao"))
            {
+               Intent intent = new Intent(this, MainActivity.class);
+               intent.putExtra(Common.IS_OPEN_ACTIVITY_NEW_ORDER, true); //Use extra to detect is app from notification.
+
+               Common.showNotification(this, new Random().nextInt(),
+                       dataRecv.get(Common.NOTI_TITLE),
+                       dataRecv.get(Common.NOTI_CONTENT),
+                       intent);
+           }
+           else {
                Common.showNotification(this, new Random().nextInt(),
                        dataRecv.get(Common.NOTI_TITLE),
                        dataRecv.get(Common.NOTI_CONTENT),

@@ -22,10 +22,15 @@ import android.text.style.StyleSpan;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.nghiem.rilleyClient.Model.DiscountModel;
 import com.nghiem.rilleyClient.Model.MilkTeaModel;
+import com.nghiem.rilleyClient.Model.MilkteaLocationModel;
 import com.nghiem.rilleyClient.Model.SugarModel;
 import com.nghiem.rilleyClient.Model.CategoryModel;
 import com.nghiem.rilleyClient.Model.FoodModel;
@@ -66,6 +71,7 @@ public class Common {
     public static final String LOCATION_REF = "Location";
     public static final float SHIPPING_COST_PER_KM = 1; //1$ per km
     public static final double MAX_SHIPPING_COST = 30;  //if over 30km we just take 30$
+    public static final String IS_OPEN_ACTIVITY_NEW_ORDER = "IsOpenActivityOrder";
     private static final String TOKEN_REF = "Tokens";
     public static final String CHAT_REF = "Chat";
     public static final String KEY_ROOM_ID = "CHAT_ROOM_ID";
@@ -77,6 +83,7 @@ public class Common {
     public static ShippingOrderModel currentShippingOrder;
     public static MilkTeaModel currentMilktea;
     public static DiscountModel discountApply;
+    public static MilkteaLocationModel milkteaLocationModel;
 
 
     public static String formatPrice(double price) {
@@ -94,18 +101,14 @@ public class Common {
 
     }
 
-    public static Double calculateExtraPrice(SizeModel userSelectedSize, List<SugarModel> userSelectedAddon) {
+    public static Double calculateExtraPrice(SizeModel userSelectedSize,SugarModel userSelectedAddon){
         Double result = 0.0;
         if(userSelectedSize == null && userSelectedAddon == null)
             return 0.0;
         else if(userSelectedSize == null)
         {
             //If User Selected Add on !=null, sum price
-            for(SugarModel sugarModel : userSelectedAddon)
-            {
-                result+= sugarModel.getPrice();
-            }
-            return result;
+            return userSelectedAddon.getPrice()*1.0;
         }
         else if (userSelectedAddon == null)
         {
@@ -114,15 +117,39 @@ public class Common {
         else
         {
             //If both Size and Addon Selected
-            result = userSelectedSize.getPrice()*1.0;
-            for(SugarModel sugarModel : userSelectedAddon)
-            {
-                result+= sugarModel.getPrice();
-            }
-
-            return result;
+            return userSelectedSize.getPrice()*1.0 + userSelectedAddon.getPrice()*1.0;
         }
     }
+
+//    public static Double calculateExtraPrice(SizeModel userSelectedSize, List<SugarModel> userSelectedAddon) {
+//        Double result = 0.0;
+//        if(userSelectedSize == null && userSelectedAddon == null)
+//            return 0.0;
+//        else if(userSelectedSize == null)
+//        {
+//            //If User Selected Add on !=null, sum price
+//            for(SugarModel sugarModel : userSelectedAddon)
+//            {
+//                result+= sugarModel.getPrice();
+//            }
+//            return result;
+//        }
+//        else if (userSelectedAddon == null)
+//        {
+//            return userSelectedSize.getPrice()*1.0;
+//        }
+//        else
+//        {
+//            //If both Size and Addon Selected
+//            result = userSelectedSize.getPrice()*1.0;
+//            for(SugarModel sugarModel : userSelectedAddon)
+//            {
+//                result+= sugarModel.getPrice();
+//            }
+//
+//            return result;
+//        }
+//    }
 
     public static void setSpanString(String welcome, String name, TextView textView) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -399,5 +426,27 @@ public class Common {
                 result = result.substring(cut+1);
         }
         return result;
+    }
+
+    public static void loadMilkteaLocation(Context context) {
+        FirebaseDatabase.getInstance(URL)
+                .getReference(MILKTEA_REF)
+                .child(currentMilktea.getUid())
+                .child(LOCATION_REF)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists())
+                        {
+                            milkteaLocationModel = snapshot.getValue(MilkteaLocationModel.class);
+                        }
+                        else
+                            Toast.makeText(context, "Vị trí cửa hàng trống", Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 }

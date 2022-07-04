@@ -504,10 +504,10 @@ public class OrderFragment extends Fragment implements IShipperLoadCallbackListe
                                         if (dataSnapshot.exists()) {
                                             TokenModel tokenModel = dataSnapshot.getValue(TokenModel.class);
                                             Map<String, String> notidata = new HashMap<>();
-                                            notidata.put(Common.NOTI_TITLE, "Your order update");
-                                            notidata.put(Common.NOTI_CONTENT, new StringBuilder("Your order ")
+                                            notidata.put(Common.NOTI_TITLE, "Đơn hàng của bạn đã được cập nhật");
+                                            notidata.put(Common.NOTI_CONTENT, new StringBuilder("Đơn hàng ")
                                                     .append(orderModel.getKey())
-                                                    .append(" was update to ")
+                                                    .append(" đã được cập nhật thành ")
                                                     .append(Common.convertStatusToString(status)).toString()
                                             );
 

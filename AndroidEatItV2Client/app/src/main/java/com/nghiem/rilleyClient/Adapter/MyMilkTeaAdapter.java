@@ -54,7 +54,10 @@ public class MyMilkTeaAdapter extends RecyclerView.Adapter<MyMilkTeaAdapter.MyVi
 
     @Override
     public int getItemCount() {
-        return milkTeaModelList.size();
+        if (milkTeaModelList != null)
+            return milkTeaModelList.size();
+        else
+            return 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

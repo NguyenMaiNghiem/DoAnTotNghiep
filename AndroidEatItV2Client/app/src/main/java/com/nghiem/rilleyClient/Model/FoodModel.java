@@ -12,7 +12,7 @@ public class FoodModel {
     private Long ratingCount;
 
     //For Cart
-    private List<SugarModel> userSelectedAddon;
+    private SugarModel userSelectedAddon;
     private SizeModel userSelectedSize;
 
     public FoodModel() {
@@ -98,11 +98,11 @@ public class FoodModel {
         this.ratingCount = ratingCount;
     }
 
-    public List<SugarModel> getUserSelectedAddon() {
+    public SugarModel getUserSelectedAddon() {
         return userSelectedAddon;
     }
 
-    public void setUserSelectedAddon(List<SugarModel> userSelectedAddon) {
+    public void setUserSelectedAddon(SugarModel userSelectedAddon) {
         this.userSelectedAddon = userSelectedAddon;
     }
 

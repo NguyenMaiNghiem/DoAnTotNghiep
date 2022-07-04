@@ -62,7 +62,7 @@ import io.reactivex.schedulers.Schedulers;
 public class TrackingOrderActivity extends FragmentActivity implements OnMapReadyCallback, ValueEventListener {
 
     private GoogleMap mMap;
-    private Marker shipperMarker;
+    private Marker shipperMarker , storeMarker;
 
     private PolylineOptions polylineOptions, blackPolylineOptions;
     private List<LatLng> polylineList;
@@ -167,9 +167,15 @@ public class TrackingOrderActivity extends FragmentActivity implements OnMapRead
     }
 
     private void drawRoutes() {
+        int height, width;
+        height = width = 80;
+
         LatLng locationOrder = new LatLng(Common.currentShippingOrder.getOrderModel().getLat(),
                 Common.currentShippingOrder.getOrderModel().getLng());
-        LatLng locationShipper = new LatLng(Common.currentShippingOrder.getCurrentLat(), Common.currentShippingOrder.getCurrentLng());
+        LatLng locationShipper = new LatLng(Common.currentShippingOrder.getCurrentLat(),
+                Common.currentShippingOrder.getCurrentLng());
+        LatLng locationShop = new LatLng(Common.milkteaLocationModel.getLat(),
+                Common.milkteaLocationModel.getLng());
 
         //Add Box
         mMap.addMarker(new MarkerOptions()
@@ -178,11 +184,18 @@ public class TrackingOrderActivity extends FragmentActivity implements OnMapRead
                 .snippet(Common.currentShippingOrder.getOrderModel().getShippingAddress())
                 .position(locationOrder));
 
+        //Add Store
+        BitmapDrawable bitmapDrawableStore = (BitmapDrawable) ContextCompat
+                .getDrawable(TrackingOrderActivity.this, R.drawable.shops); //Change Icon
+        Bitmap resizedStore = Bitmap.createScaledBitmap(bitmapDrawableStore.getBitmap(), width, height, false);
+        storeMarker = mMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromBitmap(resizedStore))
+                .title(Common.currentMilktea.getName())
+                .position(locationShop));
+
         //Add Shipper
         if(shipperMarker ==null)
         {
-            int height, width;
-            height = width = 80;
             BitmapDrawable bitmapDrawable = (BitmapDrawable) ContextCompat
                     .getDrawable(TrackingOrderActivity.this, R.drawable.shippernew); //Change Icon
             Bitmap resized = Bitmap.createScaledBitmap(bitmapDrawable.getBitmap(), width, height, false);

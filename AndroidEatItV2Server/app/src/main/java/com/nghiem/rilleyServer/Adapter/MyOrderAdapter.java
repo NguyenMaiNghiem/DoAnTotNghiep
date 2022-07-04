@@ -112,7 +112,10 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return orderModelList.size();
+        if (orderModelList != null)
+            return orderModelList.size();
+        else
+            return 0;
     }
 
     public OrderModel getItemAtPosition(int pos) {

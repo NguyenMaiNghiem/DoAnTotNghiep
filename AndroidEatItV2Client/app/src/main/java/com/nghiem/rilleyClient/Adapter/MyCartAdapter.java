@@ -75,8 +75,8 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.MyViewHold
                 holder.txt_food_addon.setText(new StringBuilder("Đường: ").append("Default"));
             else
             {
-                List<SugarModel> sugarModels = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<List<SugarModel>>(){}.getType());
-                holder.txt_food_addon.setText(new StringBuilder("Đường: ").append(Common.getListAddon(sugarModels)));
+                SugarModel sugarModels = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<SugarModel>(){}.getType());
+                holder.txt_food_addon.setText(new StringBuilder("Đường: ").append(sugarModels.getName()));
 
             }
 
@@ -99,7 +99,10 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.MyViewHold
 
     @Override
     public int getItemCount() {
-        return cartItemList.size();
+        if (cartItemList != null)
+            return cartItemList.size();
+        else
+            return 0;
     }
 
     public CartItem getItemPosition(int pos) {

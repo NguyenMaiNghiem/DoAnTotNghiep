@@ -598,7 +598,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             //Setting
             document.setPageSize(PageSize.A4);
             document.addCreationDate();
-            document.addAuthor("Nirmal Bakery");
+            document.addAuthor("Nghiem Nguyen");
             document.addCreator(Common.currentServerUser.getName());
 
             //Font Setting

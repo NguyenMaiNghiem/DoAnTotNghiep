@@ -9,7 +9,7 @@
 
     <CheckBox
         android:id="@+id/ckb_subscribe_news"
-        android:text="Subscribe News"
+        android:text="Đăng kí thông báo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

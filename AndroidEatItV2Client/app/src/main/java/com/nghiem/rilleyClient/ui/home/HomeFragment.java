@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.asksira.loopingviewpager.LoopingViewPager;
 import com.nghiem.rilleyClient.Adapter.MyBestDealsAdapter;
 import com.nghiem.rilleyClient.Adapter.MyPopularCategoriesAdapter;
+import com.nghiem.rilleyClient.Common.Common;
 import com.nghiem.rilleyClient.R;
 
 import butterknife.BindView;
@@ -59,8 +60,11 @@ public class HomeFragment extends Fragment {
             viewPager.setAdapter(adapter);
         });
 
+        Common.loadMilkteaLocation(getContext());
+
         return root;
     }
+
 
     private void init() {
         layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(),R.anim.layout_item_from_left);

@@ -71,7 +71,10 @@ public class MySugarAdapter extends RecyclerView.Adapter<MySugarAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return sugarModels.size();
+        if (sugarModels != null)
+            return sugarModels.size();
+        else
+            return 0;
     }
 
     public void addNewAddon(SugarModel sugarModel) {

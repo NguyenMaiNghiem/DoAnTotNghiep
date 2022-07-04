@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -23,6 +24,8 @@ import com.nghiem.rilleyServer.Model.ChatInfoModel;
 import com.nghiem.rilleyServer.viewholder.ChatListViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Calendar;
 
 public class ChatListActivity extends AppCompatActivity {
 
@@ -76,6 +79,9 @@ public class ChatListActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull ChatListViewHolder holder, int position, @NonNull ChatInfoModel model) {
                 holder.txt_email.setText(new StringBuilder(model.getCreateName()));
                 holder.txt_chat_message.setText(new StringBuilder(model.getLastMessage()));
+                holder.txt_time.setText(
+                        DateUtils.getRelativeTimeSpanString(model.getLastUpdate(),
+                                Calendar.getInstance().getTimeInMillis(),0).toString());
 
                 holder.setListener((view, pos) -> {
                     Intent intent = new Intent(ChatListActivity.this,ChatDetailActivity.class);

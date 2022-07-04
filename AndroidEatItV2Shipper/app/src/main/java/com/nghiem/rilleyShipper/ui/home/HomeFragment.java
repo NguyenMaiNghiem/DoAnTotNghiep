@@ -101,6 +101,6 @@ public class HomeFragment extends Fragment {
     @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
     public void onUpdateShippingOrder(UpdateShippingOrderEvent event)
     {
-        homeViewModel.getShippingOrderMutableData(Common.currentShipperUser.getPhone());    //Update data
+        homeViewModel.loadOrderByShipper(Common.currentShipperUser.getPhone());    //Update data
     }
 }

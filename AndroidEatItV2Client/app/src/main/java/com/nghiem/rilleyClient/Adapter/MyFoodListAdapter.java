@@ -187,7 +187,10 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.My
 
     @Override
     public int getItemCount() {
-        return foodModelList.size();
+        if (foodModelList != null)
+            return foodModelList.size();
+        else
+            return 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -46,7 +46,10 @@ import com.nghiem.rilleyClient.Common.Common;
 import com.nghiem.rilleyClient.EventBus.HideFABCart;
 import com.nghiem.rilleyClient.Model.ChatInfoModel;
 import com.nghiem.rilleyClient.Model.ChatMessageModel;
+import com.nghiem.rilleyClient.Model.FCMSendData;
 import com.nghiem.rilleyClient.Model.OrderModel;
+import com.nghiem.rilleyClient.Remote.IFCMService;
+import com.nghiem.rilleyClient.Remote.RetrofitFCMClient;
 import com.nghiem.rilleyClient.ViewHolder.ChatPictureHolder;
 import com.nghiem.rilleyClient.ViewHolder.ChatTextHolder;
 
@@ -63,10 +66,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFirebaseListener {
 
     private static final int MY_CAMERA_REQUEST_CODE = 7171;
     private static final int MY_RESULT_LOAD_IMG = 7172;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    IFCMService ifcmService;
 
     Toolbar toolbar;
     ImageView img_camera,img_image,img_send,img_preview;
@@ -91,6 +101,8 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        ifcmService = RetrofitFCMClient.getInstance().create(IFCMService.class);
+
         initViews();
         loadChatContent();
     }
@@ -106,6 +118,7 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
     protected void onStop() {
         if (adapter != null)
             adapter.stopListening();
+        compositeDisposable.clear();
         EventBus.getDefault().postSticky(new HideFABCart(false));
         super.onStop();
     }
@@ -362,11 +375,17 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                         if (dataSnapshot.exists())
                         {
                             appendChat(chatMessageModel,isPicture,estimateTimeInMs);
+
+                            String titleToAdmin = "Có tin nhắn mới";
+                            String contentToAdmin = "Bạn vừa nhận được 1 tin nhắn từ ";
+                            sendNotificationtoAdmin(titleToAdmin,contentToAdmin);
                         }
                         else
                         {
                             createChat(chatMessageModel,isPicture,estimateTimeInMs);
-
+                            String titleToAdmin = "Có tin nhắn mới";
+                            String contentToAdmin = "Bạn vừa nhận được 1 tin nhắn từ ";
+                            sendNotificationtoAdmin(titleToAdmin,contentToAdmin);
                         }
                     }
 
@@ -460,6 +479,7 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                                         if (adapter != null)
                                         {
                                             adapter.notifyDataSetChanged();
+
                                             if (isPicture)
                                             {
                                                 fileUri = null;
@@ -472,6 +492,27 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                     }
 
                 });
+    }
+
+    private void sendNotificationtoAdmin(String title , String content){
+        Map<String, String> notiData = new HashMap<>();
+        notiData.put(Common.NOTI_TITLE, title);
+        notiData.put(Common.NOTI_CONTENT, new StringBuilder(content)
+                .append(Common.currentUser.getName()).toString());
+
+        FCMSendData sendData =
+                new FCMSendData(Common.createTopicOrder(), notiData);
+
+        compositeDisposable.add(ifcmService.sendNotification(sendData)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(fcmResponse -> {
+                    //Clean Success
+                    Toast.makeText(ChatActivity.this, "Đã gửi thông báo đến Admin", Toast.LENGTH_SHORT).show();
+                }, throwable -> {
+                    Toast.makeText(ChatActivity.this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                })
+        );
     }
 
     @Override
@@ -534,12 +575,12 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                     fileUri = imageUri;
                 }catch (FileNotFoundException e){
                     e.printStackTrace();
-                    Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "File không tìm thấy", Toast.LENGTH_SHORT).show();
                 }
             }
             else
             {
-                Toast.makeText(this, "Please choose image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng chọn hình ảnh", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -552,4 +593,6 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                 bitmap.getHeight(),
                 matrix,true);
     }
+
+
 }

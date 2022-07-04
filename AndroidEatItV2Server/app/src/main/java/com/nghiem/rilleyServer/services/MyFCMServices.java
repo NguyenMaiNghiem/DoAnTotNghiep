@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
+import com.nghiem.rilleyServer.ChatListActivity;
 import com.nghiem.rilleyServer.Common.Common;
 import com.nghiem.rilleyServer.MainActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -17,7 +18,10 @@ public class MyFCMServices extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Map<String, String> dataRecv = remoteMessage.getData();
         if (dataRecv != null) {
-            if (dataRecv.get(Common.NOTI_TITLE).equals("New Order Client")) {
+            if (dataRecv.get(Common.NOTI_TITLE).equals("New Order Client")
+                    || dataRecv.get(Common.NOTI_TITLE).equals("Đơn hàng của bạn đã bắt đầu giao")
+                    || dataRecv.get(Common.NOTI_TITLE).equals("Đơn hàng của bạn đã được giao thành công"))
+            {
 
                 ///Here we need call main activity because we have to assign value for Common.currentUser
                 //So we must call mainactivity. to do that, if you directly call home activity it will crash
@@ -30,7 +34,17 @@ public class MyFCMServices extends FirebaseMessagingService {
                         dataRecv.get(Common.NOTI_CONTENT),
                         intent);
 
-            } else
+            } else if (dataRecv.get(Common.NOTI_TITLE).equals("Có tin nhắn mới"))
+            {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra(Common.IS_OPEN_ACTIVITY_CHAT, true);
+
+                Common.showNotification(this, new Random().nextInt(),
+                        dataRecv.get(Common.NOTI_TITLE),
+                        dataRecv.get(Common.NOTI_CONTENT),
+                        intent);
+            }
+            else
                 Common.showNotification(this, new Random().nextInt(),
                         dataRecv.get(Common.NOTI_TITLE),
                         dataRecv.get(Common.NOTI_CONTENT),

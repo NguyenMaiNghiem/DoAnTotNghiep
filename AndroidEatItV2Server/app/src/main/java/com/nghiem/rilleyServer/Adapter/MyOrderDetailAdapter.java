@@ -73,28 +73,43 @@ public class MyOrderDetailAdapter extends RecyclerView.Adapter<MyOrderDetailAdap
 
         if(!cartItemList.get(position).getFoodAddOn().equals("Default"))
         {
-            List<SugarModel> sugarModels = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<List<SugarModel>>(){}.getType());
+            SugarModel sugarModel = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<SugarModel>(){}.getType());
 
-            StringBuilder addonString = new StringBuilder();
-            if(sugarModels !=null)
-            {
-                for(SugarModel sugarModel : sugarModels)
-                    addonString.append(sugarModel.getName()).append(",");
-
-                addonString.delete(addonString.length()-1, addonString.length()); //Remove "," last
-                holder.txt_food_add_on.setText(new StringBuilder("Add On: ").append(addonString));
-            }
+            if(sugarModel!=null)
+                holder.txt_food_add_on.setText(new StringBuilder("Đường: ").append(sugarModel.getName()));
         }
         else
         {
-            holder.txt_food_add_on.setText(new StringBuilder("Addon: Default"));
+            holder.txt_food_add_on.setText(new StringBuilder("Đường: Default"));
         }
+
+//        if(!cartItemList.get(position).getFoodAddOn().equals("Default"))
+//        {
+//            List<SugarModel> sugarModels = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<List<SugarModel>>(){}.getType());
+//
+//            StringBuilder addonString = new StringBuilder();
+//            if(sugarModels !=null)
+//            {
+//                for(SugarModel sugarModel : sugarModels)
+//                    addonString.append(sugarModel.getName()).append(",");
+//
+//                addonString.delete(addonString.length()-1, addonString.length()); //Remove "," last
+//                holder.txt_food_add_on.setText(new StringBuilder("Add On: ").append(addonString));
+//            }
+//        }
+//        else
+//        {
+//            holder.txt_food_add_on.setText(new StringBuilder("Addon: Default"));
+//        }
 
     }
 
     @Override
     public int getItemCount() {
-        return cartItemList.size();
+        if (cartItemList != null)
+            return cartItemList.size();
+        else
+            return 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

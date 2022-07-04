@@ -78,6 +78,7 @@ public class Common {
     public static final int FULL_WIDTH_COLUMN = 1;
     public static final String DISCOUNT = "Discount";
     public static final String LOCATION_REF = "Location";
+    public static final String IS_OPEN_ACTIVITY_CHAT = "IsOpenActivityChat";
     public static ServerUserModel currentServerUser;
     public static CategoryModel categorySelected;
     public static FoodModel selectedFood;
@@ -110,15 +111,15 @@ public class Common {
     public static String convertStatusToString(int orderStatus) {
         switch (orderStatus) {
             case 0:
-                return "Placed";
+                return "Đợi phản hổi";
             case 1:
-                return "Shipping";
+                return "Đang ship";
             case 2:
-                return "Shipped";
+                return "Đã ship";
             case -1:
-                return "Cancelled";
+                return "Đã hủy";
             default:
-                return "Error";
+                return "Lỗi";
         }
     }
 

@@ -15,14 +15,15 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/brandon_medium">
+        android:fontFamily="@font/brandon_medium"
+        android:layout_marginTop="5dp">
 
         <EditText
             android:id="@+id/edt_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/brandon_medium"
-            android:hint="Enter your address" />
+            android:hint="Nhập địa chỉ" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -31,10 +32,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/brandon_medium"
-        android:text="Your address"
+        android:text="Địa chỉ của bạn"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_margin="5dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -46,9 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/brandon_medium"
-            android:hint="Enter your comment" />
-
-
+            android:hint="Thêm bình luận" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -56,10 +56,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/brandon_medium"
-        android:text="Delivery Method"
+        android:text="Địa chỉ giao hàng"
         android:textColor="@color/dialog_header_color"
         android:textSize="22sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
 
     <RadioGroup
         android:layout_width="match_parent"
@@ -72,7 +73,7 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:fontFamily="@font/brandon_medium"
-            android:text="Home Address"
+            android:text="Địa chỉ nhà bạn"
             android:textColor="@color/dialog_text_color"
             android:textSize="18sp"
             android:textStyle="italic" />
@@ -82,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/brandon_medium"
-            android:text="Other Address"
+            android:text="1 địa chỉ khác"
             android:textColor="@color/dialog_text_color"
             android:textSize="18sp"
             android:textStyle="italic" />
@@ -92,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/brandon_medium"
-            android:text="Ship to this Address"
+            android:text="Ngay vị trí của bạn"
             android:textColor="@color/dialog_text_color"
             android:textSize="18sp"
             android:textStyle="italic" />
@@ -104,7 +105,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/brandon_medium"
-        android:text="Payment Method"
+        android:text="Phương thức thanh toán"
         android:textColor="@color/dialog_header_color"
         android:textSize="22sp"
         android:textStyle="bold" />
@@ -120,7 +121,7 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:fontFamily="@font/brandon_medium"
-            android:text="Cash on Delivery"
+            android:text="Thanh toán nhận hàng"
             android:textColor="@color/dialog_text_color"
             android:textSize="18sp"
             android:textStyle="italic" />

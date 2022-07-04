@@ -76,9 +76,10 @@ public class MyOrdersAdapter extends RecyclerView.Adapter<MyOrdersAdapter.MyView
             .append(" ")
                 .append(simpleDateFormat.format(date)));
 
-        holder.txt_order_number.setText(new StringBuilder("Order number: ").append(orderList.get(position).getOrderNumber()));
-        holder.txt_order_comment.setText(new StringBuilder("Comment: ").append(orderList.get(position).getComment()));
-        holder.txt_order_status.setText(new StringBuilder("Status: ").append(Common.convertStatusToText(orderList.get(position).getOrderStatus())));
+        holder.txt_order_number.setText(new StringBuilder("Số đơn hàng: ").append(orderList.get(position).getOrderNumber()));
+        holder.txt_order_comment.setText(new StringBuilder("Binh luận: ").append(orderList.get(position).getComment()));
+        holder.txt_order_status.setText(new StringBuilder("Trạng thái: ").append(Common.convertStatusToText(orderList.get(position).getOrderStatus())));
+        holder.txt_order_total_cost.setText(new StringBuilder("Tổng tiền: ").append(orderList.get(position).getTotalPayment()));
 
         holder.setRecyclerClickListener((view, pos) -> {
             showDialog(orderList.get(pos).getCartItemList());
@@ -119,7 +120,10 @@ public class MyOrdersAdapter extends RecyclerView.Adapter<MyOrdersAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return orderList.size();
+        if (orderList != null)
+            return orderList.size();
+        else
+            return 0;
     }
 
 
@@ -142,6 +146,8 @@ public class MyOrdersAdapter extends RecyclerView.Adapter<MyOrdersAdapter.MyView
         TextView txt_order_number;
         @BindView(R.id.txt_order_date)
         TextView txt_order_date;
+        @BindView(R.id.txt_order_total_cost)
+        TextView txt_order_total_cost;
         @BindView(R.id.img_order)
         ImageView img_order;
 

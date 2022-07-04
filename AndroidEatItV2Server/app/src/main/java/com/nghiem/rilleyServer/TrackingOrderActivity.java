@@ -375,11 +375,7 @@ public class TrackingOrderActivity extends FragmentActivity implements OnMapRead
                                         shipperMarker.setRotation(Common.getBearing(start, newPos));
 
                                         mMap.moveCamera(CameraUpdateFactory.newLatLng(newPos));
-
-
                                     }
-
-
                                 });
 
                                 valueAnimator.start();
@@ -387,8 +383,6 @@ public class TrackingOrderActivity extends FragmentActivity implements OnMapRead
                                 {
                                     handler.postDelayed(this, 1500);
                                 }
-
-
                             }
                         }, 1500);
                     } catch (Exception e) {

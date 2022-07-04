@@ -54,7 +54,10 @@ public class MyShipperAdapter extends RecyclerView.Adapter<MyShipperAdapter.MyVi
 
     @Override
     public int getItemCount() {
-        return shipperModelList.size();
+        if (shipperModelList != null)
+            return shipperModelList.size();
+        else
+            return 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

@@ -60,7 +60,10 @@ public class MyShipperSelectedAdapter extends RecyclerView.Adapter<MyShipperSele
 
     @Override
     public int getItemCount() {
-        return shipperModelList.size();
+        if (shipperModelList != null)
+            return shipperModelList.size();
+        else
+            return 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -52,7 +52,10 @@ public class MyMostPopularAdapter extends RecyclerView.Adapter<MyMostPopularAdap
 
     @Override
     public int getItemCount() {
-        return mostPopularModelList.size();
+        if (mostPopularModelList != null)
+            return mostPopularModelList.size();
+        else
+            return 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

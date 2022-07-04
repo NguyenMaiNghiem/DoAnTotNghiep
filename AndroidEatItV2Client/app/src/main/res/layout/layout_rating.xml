@@ -19,7 +19,7 @@
 
         <EditText
             android:id="@+id/edt_comment"
-            android:hint="Plese write something"
+            android:hint="Vui lòng viết điều gì đó cho đánh giá của bạn"
             android:maxLines="100"
             android:layout_width="match_parent"
             android:layout_height="200dp"/>

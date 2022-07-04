@@ -1,7 +1,7 @@
 package com.nghiem.rilleyClient.Model;
 
 public class MilkTeaModel {
-    private String uid,name,address,imageUrl,phone;
+    private String uid = "milkteaa",name,address,imageUrl,phone;
 
     public MilkTeaModel() {
     }

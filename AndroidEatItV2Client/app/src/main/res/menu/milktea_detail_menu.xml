@@ -3,35 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:id="@+id/home_group">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/menu_home" />
     </group>
 
-    <group android:id="@+id/category_group">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_milktea"
+            android:icon="@drawable/ic_baseline_store_24"
+            android:title="@string/menu_milktea" />
+    </group>
+
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_menu"
             android:icon="@drawable/ic_restaurant_menu_black_24dp"
             android:title="@string/menu_menu" />
     </group>
 
-    <group android:id="@+id/news_group">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_news"
             android:icon="@drawable/ic_markunread_black_24dp"
             android:title="@string/menu_subscribe_news" />
     </group>
 
-    <group android:id="@+id/cart_group">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_cart"
             android:icon="@drawable/ic_shopping_cart_black_24dp"
             android:title="@string/menu_cart" />
     </group>
 
-    <group android:id="@+id/view_orders_group">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_view_orders"
             android:icon="@drawable/ic_view_headline_black_24dp"

@@ -136,7 +136,12 @@ public class Common {
     }
 
     public static String createTopicOrder() {
-        return new StringBuilder("/topics/new_order_nb").toString();
+        //return something like "/topics/milkteaid_new_order
+        return new StringBuilder("/topics/")
+                .append(Common.currentMilktea.getUid())
+                .append("_")
+                .append("new_order")
+                .toString();
     }
 
     public static float getBearing(LatLng begin, LatLng end) {

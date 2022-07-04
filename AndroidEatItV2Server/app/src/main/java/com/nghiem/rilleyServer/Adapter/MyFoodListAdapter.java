@@ -135,7 +135,10 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.My
 
     @Override
     public int getItemCount() {
-        return foodModelList.size();
+        if (foodModelList != null)
+            return foodModelList.size();
+        else
+            return 0;
     }
 
     public FoodModel getItemAtPosition(int pos)

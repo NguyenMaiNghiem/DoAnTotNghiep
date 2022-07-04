@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,6 +64,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.bringToFront();
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView txt_user = (TextView) headerView.findViewById(R.id.txt_user);
+        Common.setSpanString("Hey,", Common.currentShipperUser.getName() + " Shipper", txt_user);
+
     }
 
     private void checkStartTrip() {

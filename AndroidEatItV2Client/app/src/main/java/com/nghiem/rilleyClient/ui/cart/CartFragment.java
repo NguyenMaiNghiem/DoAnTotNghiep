@@ -121,7 +121,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListener, ISearchCategoryCallbackListener, TextWatcher {
+public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListener, ISearchCategoryCallbackListener{
 
     private static final int SCAN_QR_PERMISSION = 7171;
     //Update Cart Dialog
@@ -211,7 +211,7 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
                                         if (discountModel.getUntilDate() < estimatedServerTimeMs)
                                         {
                                             dialog.dismiss();
-                                            listener.onLoadTimeFailed("Discount code has been expried");
+                                            listener.onLoadTimeFailed("Mã giảm giá đã hết hạn");
                                         }
                                         else {
                                             dialog.dismiss();
@@ -221,7 +221,7 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
                                     }
                                     else {
                                         dialog.dismiss();
-                                        listener.onLoadTimeFailed("Discount not valid");
+                                        listener.onLoadTimeFailed("Mã giảm giá không hợp lệ");
                                     }
                                 }
 
@@ -246,7 +246,7 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
     @OnClick(R.id.btn_place_order)
     void onPlaceOrderClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("One more step!");
+        builder.setTitle("Thêm 1 bước nữa!");
 
         if (view == null)
             view = LayoutInflater.from(getContext()).inflate(R.layout.layout_place_order, null);
@@ -339,7 +339,6 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
                         });
             }
         });
-
 
         builder.setView(view);
         builder.setNegativeButton("NO", (dialogInterface, which) -> dialogInterface.dismiss());
@@ -437,6 +436,7 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
                                                 milkteaLocation.setLatitude(location.getLat());
                                                 milkteaLocation.setLongitude(location.getLng());
 
+                                                //Caculate fee ship
                                                 float distance = orderLocation.distanceTo(milkteaLocation)/1000; //in KM
                                                 if (distance * Common.SHIPPING_COST_PER_KM > Common.MAX_SHIPPING_COST)
                                                     order.setShippingCost(Common.MAX_SHIPPING_COST);
@@ -486,6 +486,7 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
 
     private void  syncLocalTimeWithGlobalTime(OrderModel order) {
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setCancelable(false)
                 .setTitle("Phí Giao Hàng")
                 .setMessage(new StringBuilder("ước tính là ")
                 .append(Math.round(order.getShippingCost()*100.0)/100.0)
@@ -558,7 +559,6 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
                                                 Toast.makeText(getContext(), "Order Placed Successfully", Toast.LENGTH_SHORT).show();
                                                 EventBus.getDefault().postSticky(new CounterCartEvent(true));
                                             }, throwable -> {
-                                                //Clean Success
                                                 Toast.makeText(getContext(), "Order was sent but failure to send notification", Toast.LENGTH_SHORT).show();
                                                 EventBus.getDefault().postSticky(new CounterCartEvent(true));
                                             })
@@ -692,7 +692,7 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
         MySwipeHelper mySwipeHelper = new MySwipeHelper(getContext(), recycler_cart, 200) {
             @Override
             public void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buf) {
-                buf.add(new MyButton(getContext(), "Delete", 30, 0, Color.parseColor("#FF3C30"),
+                buf.add(new MyButton(getContext(), "Xóa", 30, 0, Color.parseColor("#FF3C30"),
                         pos -> {
 //                            Toast.makeText(getContext(), "Delete item Click!", Toast.LENGTH_SHORT).show();
                             CartItem cartItem = cartAdapter.getItemPosition(pos);
@@ -710,7 +710,7 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
                                             cartAdapter.notifyItemRemoved(pos);
                                             sumAllItemInCart(); //Update Total Price
                                             EventBus.getDefault().postSticky(new CounterCartEvent(true));   //Update FAB
-                                            Toast.makeText(getContext(), "Delete item from Cart Succesful!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "Xóa sản phẩm thành công!", Toast.LENGTH_SHORT).show();
                                         }
 
                                         @Override
@@ -722,7 +722,7 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
 
                 ));
 
-                buf.add(new MyButton(getContext(), "Update", 30, 0, Color.parseColor("#5D4037"),
+                buf.add(new MyButton(getContext(), "Cập nhật", 30, 0, Color.parseColor("#5D4037"),
                         pos -> {
                             CartItem cartItem = cartAdapter.getItemPosition(pos);
                             FirebaseDatabase.getInstance(Common.URL)
@@ -738,7 +738,7 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
                                                 searchFoodCallbackListener.onSearchCategoryFound(categoryModel, cartItem);
 
                                             } else {
-                                                searchFoodCallbackListener.onSearchCategoryNotfound("Food not found");
+                                                searchFoodCallbackListener.onSearchCategoryNotfound("Không tìm thấy sản phẩm");
                                             }
                                         }
 
@@ -756,39 +756,39 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
         sumAllItemInCart();
 
         //Addon
-        addonBottomSheetDialog = new BottomSheetDialog(getContext(), R.style.DialogStyle);
-        View layout_addon_display = getLayoutInflater().inflate(R.layout.layout_addon_display, null);
-        chip_group_addon = (ChipGroup) layout_addon_display.findViewById(R.id.chip_group_addon);
-        edt_search = (EditText) layout_addon_display.findViewById(R.id.edt_search);
-        addonBottomSheetDialog.setContentView(layout_addon_display);
-        addonBottomSheetDialog.setOnDismissListener(dialogInterface -> {
-            displayUserSelectedAddon(chip_group_user_selected_addon);
-            calculateTotalPrice();
-        });
+//        addonBottomSheetDialog = new BottomSheetDialog(getContext(), R.style.DialogStyle);
+//        View layout_addon_display = getLayoutInflater().inflate(R.layout.layout_addon_display, null);
+//        chip_group_addon = (ChipGroup) layout_addon_display.findViewById(R.id.chip_group_addon);
+//        edt_search = (EditText) layout_addon_display.findViewById(R.id.edt_search);
+//        addonBottomSheetDialog.setContentView(layout_addon_display);
+//        addonBottomSheetDialog.setOnDismissListener(dialogInterface -> {
+//            //displayUserSelectedAddon(chip_group_user_selected_addon);
+//            calculateTotalPrice();
+//        });
     }
 
-    private void displayUserSelectedAddon(ChipGroup chip_group_user_selected_addon) {
-        if (Common.selectedFood.getUserSelectedAddon() != null &&
-                Common.selectedFood.getUserSelectedAddon().size() > 0) {
-            chip_group_user_selected_addon.removeAllViews();
-            for (SugarModel sugarModel : Common.selectedFood.getUserSelectedAddon()) {
-                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_with_delete_icon, null);
-                chip.setText(new StringBuilder(sugarModel.getName()).append("(+$")
-                        .append(sugarModel.getPrice()).append(")"));
-
-                chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (isChecked) {
-                        if (Common.selectedFood.getUserSelectedAddon() == null)
-                            Common.selectedFood.setUserSelectedAddon(new ArrayList<>());
-                        Common.selectedFood.getUserSelectedAddon().add(sugarModel);
-                    }
-                });
-
-                chip_group_user_selected_addon.addView(chip);
-            }
-        } else
-            chip_group_user_selected_addon.removeAllViews();
-    }
+//    private void displayUserSelectedAddon(ChipGroup chip_group_user_selected_addon) {
+//        if (Common.selectedFood.getUserSelectedAddon() != null &&
+//                Common.selectedFood.getUserSelectedAddon().size() > 0) {
+//            chip_group_user_selected_addon.removeAllViews();
+//            for (SugarModel sugarModel : Common.selectedFood.getUserSelectedAddon()) {
+//                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_with_delete_icon, null);
+//                chip.setText(new StringBuilder(sugarModel.getName()).append("(+$")
+//                        .append(sugarModel.getPrice()).append(")"));
+//
+////                chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+////                    if (isChecked) {
+////                        if (Common.selectedFood.getUserSelectedAddon() == null)
+////                            Common.selectedFood.setUserSelectedAddon(new ArrayList<>());
+////                        Common.selectedFood.getUserSelectedAddon().add(sugarModel);
+////                    }
+////                });
+//
+//                chip_group_user_selected_addon.addView(chip);
+//            }
+//        } else
+//            chip_group_user_selected_addon.removeAllViews();
+//    }
 
     private void initPlacesClient() {
         Places.initialize(getContext(), getString(R.string.google_maps_key));
@@ -811,13 +811,13 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
                         if (Common.discountApply != null)
                         {
                             aDouble = aDouble - (aDouble * Common.discountApply.getPercent()/100);
-                            txt_total_price.setText(new StringBuilder("Total: ").append(aDouble)
+                            txt_total_price.setText(new StringBuilder("Tổng tiền: ").append(aDouble)
                             .append("(-")
                             .append(Common.discountApply.getPercent())
                             .append("%)"));
                         }
                         else {
-                            txt_total_price.setText(new StringBuilder("Total: ").append(aDouble));
+                            txt_total_price.setText(new StringBuilder("Tổng tiền: ").append(aDouble));
                         }
 
                     }
@@ -945,7 +945,7 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
 
                     @Override
                     public void onSuccess(Double price) {
-                        txt_total_price.setText(new StringBuilder("Total: ")
+                        txt_total_price.setText(new StringBuilder("Tổng tiền : ")
                                 .append(Common.formatPrice(price)));
                     }
 
@@ -1002,15 +1002,16 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
         Button btn_cancel = (Button) itemView.findViewById(R.id.btn_cancel);
 
         RadioGroup rdi_group_size = (RadioGroup) itemView.findViewById(R.id.rdi_group_size);
-        chip_group_user_selected_addon = (ChipGroup) itemView.findViewById(R.id.chip_group_user_selected_addon);
-
-        ImageView img_add_on = (ImageView) itemView.findViewById(R.id.img_add_addon);
-        img_add_on.setOnClickListener(view -> {
-            if (foodModel.getSugar() != null) {
-                displayAddonList();
-                addonBottomSheetDialog.show();
-            }
-        });
+        RadioGroup rdi_group_sugar = (RadioGroup) itemView.findViewById(R.id.rdi_group_sugar);
+//        chip_group_user_selected_addon = (ChipGroup) itemView.findViewById(R.id.chip_group_user_selected_addon);
+//
+//        ImageView img_add_on = (ImageView) itemView.findViewById(R.id.img_add_addon);
+//        img_add_on.setOnClickListener(view -> {
+//            if (foodModel.getSugar() != null) {
+//                displayAddonList();
+//                addonBottomSheetDialog.show();
+//            }
+//        });
 
         //Size
         if (foodModel.getSize() != null) {
@@ -1039,8 +1040,35 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
             }
         }
 
+        //Sugar
+        if (foodModel.getSugar() != null) {
+            for (SugarModel sugarModel : foodModel.getSugar()) {
+                RadioButton radioButton = new RadioButton(getContext());
+                radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked)
+                            Common.selectedFood.setUserSelectedAddon(sugarModel);
+                        calculateTotalPrice();  //Update Price
+                    }
+                });
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
+                radioButton.setLayoutParams(params);
+                radioButton.setText(sugarModel.getName());
+                radioButton.setTag(sugarModel.getPrice());
+
+                rdi_group_sugar.addView(radioButton);
+            }
+
+            if (rdi_group_sugar.getChildCount() > 0) {
+                RadioButton radioButton = (RadioButton) rdi_group_sugar.getChildAt(0);
+                radioButton.setChecked(true); //Default First Selected
+            }
+        }
+
         //Addon
-        displayAlreadySelectedAddon(chip_group_user_selected_addon, cartItem);
+//        displayAlreadySelectedAddon(chip_group_user_selected_addon, cartItem);
 
         //Show Dialog
         AlertDialog dialog = builder.create();
@@ -1069,16 +1097,16 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
                             if (Common.selectedFood.getUserSelectedAddon() != null)
                                 cartItem.setFoodAddOn(new Gson().toJson(Common.selectedFood.getUserSelectedAddon()));
                             else
-                                cartItem.setFoodAddOn("Default");
+                                cartItem.setFoodAddOn(" Bình thường");
 
                             if (Common.selectedFood.getUserSelectedSize() != null)
                                 cartItem.setFoodSize(new Gson().toJson(Common.selectedFood.getUserSelectedSize()));
                             else
-                                cartItem.setFoodAddOn("Default");
+                                cartItem.setFoodAddOn(" Bình thường");
 
 
-                            cartItem.setFoodExtraPrice(Common.calculateExtraPrice(Common.selectedFood.getUserSelectedSize(),
-                                    Common.selectedFood.getUserSelectedAddon()));
+//                            cartItem.setFoodExtraPrice(Common.calculateExtraPrice(Common.selectedFood.getUserSelectedSize(),
+//                                    Common.selectedFood.getUserSelectedAddon()));
 
                             //Insert New
                             compositeDisposable.add(cartDataSource.insertOrReplaceAll(cartItem)
@@ -1111,101 +1139,101 @@ public class CartFragment extends Fragment implements ILoadTimeFromFirebaseListe
 
     }
 
-    private void displayAlreadySelectedAddon(ChipGroup chip_group_user_selected_addon, CartItem cartItem) {
-        //This function will display all addon we already seelcted before addtocart and display on layout
-        if (cartItem.getFoodAddOn() != null && !cartItem.getFoodAddOn().equals("Default")) {
-            List<SugarModel> sugarModels = new Gson().fromJson(cartItem.getFoodAddOn(), new TypeToken<List<SugarModel>>() {
-            }.getType());
+//    private void displayAlreadySelectedAddon(ChipGroup chip_group_user_selected_addon, CartItem cartItem) {
+//        //This function will display all addon we already seelcted before addtocart and display on layout
+//        if (cartItem.getFoodAddOn() != null && !cartItem.getFoodAddOn().equals("Default")) {
+//            List<SugarModel> sugarModels = new Gson().fromJson(cartItem.getFoodAddOn(), new TypeToken<List<SugarModel>>() {
+//            }.getType());
+//
+////            Common.selectedFood.setUserSelectedAddon(sugarModels);
+//
+//            chip_group_user_selected_addon.removeAllViews();
+//
+//            for (SugarModel sugarModel : sugarModels) {
+//                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_with_delete_icon, null);
+//                chip.setText(new StringBuilder(sugarModel.getName()).append("(+₹")
+//                        .append(sugarModel.getPrice()).append(")"));
+//
+//                chip.setClickable(false);
+//                chip.setOnCloseIconClickListener(v -> {
+//                    //Remove when user click Deelete
+//                    chip_group_user_selected_addon.removeView(v);
+//                    Common.selectedFood.getUserSelectedAddon().remove(sugarModel);
+//                    calculateTotalPrice();
+//                });
+//
+//                chip_group_user_selected_addon.addView(chip);
+//
+//            }
+//
+//        }
+//    }
 
-            Common.selectedFood.setUserSelectedAddon(sugarModels);
-
-            chip_group_user_selected_addon.removeAllViews();
-
-            for (SugarModel sugarModel : sugarModels) {
-                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_with_delete_icon, null);
-                chip.setText(new StringBuilder(sugarModel.getName()).append("(+₹")
-                        .append(sugarModel.getPrice()).append(")"));
-
-                chip.setClickable(false);
-                chip.setOnCloseIconClickListener(v -> {
-                    //Remove when user click Deelete
-                    chip_group_user_selected_addon.removeView(v);
-                    Common.selectedFood.getUserSelectedAddon().remove(sugarModel);
-                    calculateTotalPrice();
-                });
-
-                chip_group_user_selected_addon.addView(chip);
-
-            }
-
-        }
-    }
-
-    private void displayAddonList() {
-        if (Common.selectedFood.getSugar() != null && Common.selectedFood.getSugar().size() > 0) {
-            chip_group_addon.clearCheck();
-            chip_group_addon.removeAllViews();
-
-            edt_search.addTextChangedListener(this);
-
-            for (SugarModel sugarModel : Common.selectedFood.getSugar()) {
-                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_addon_item, null);
-                chip.setText(new StringBuilder(sugarModel.getName()).append("(+₹")
-                        .append(sugarModel.getPrice()).append(")"));
-
-                chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (isChecked) {
-                        if (Common.selectedFood.getUserSelectedAddon() == null)
-                            Common.selectedFood.setUserSelectedAddon(new ArrayList<>());
-                        Common.selectedFood.getUserSelectedAddon().add(sugarModel);
-                    }
-                });
-
-                chip_group_addon.addView(chip);
-
-            }
-
-        }
-    }
+//    private void displayAddonList() {
+//        if (Common.selectedFood.getSugar() != null && Common.selectedFood.getSugar().size() > 0) {
+//            chip_group_addon.clearCheck();
+//            chip_group_addon.removeAllViews();
+//
+//            edt_search.addTextChangedListener(this);
+//
+//            for (SugarModel sugarModel : Common.selectedFood.getSugar()) {
+//                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_addon_item, null);
+//                chip.setText(new StringBuilder(sugarModel.getName()).append("(+₹")
+//                        .append(sugarModel.getPrice()).append(")"));
+//
+////                chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+////                    if (isChecked) {
+////                        if (Common.selectedFood.getUserSelectedAddon() == null)
+////                            Common.selectedFood.setUserSelectedAddon(new ArrayList<>());
+////                        Common.selectedFood.getUserSelectedAddon().add(sugarModel);
+////                    }
+////                });
+//
+//                chip_group_addon.addView(chip);
+//
+//            }
+//
+//        }
+//    }
 
     @Override
     public void onSearchCategoryNotfound(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//    @Override
+//    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//    }
+//
+//    @Override
+//    public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+//        chip_group_addon.clearCheck();
+//        chip_group_addon.removeAllViews();
+//
+//        for (SugarModel sugarModel : Common.selectedFood.getSugar()) {
+//            if (sugarModel.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+//                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_addon_item, null);
+//                chip.setText(new StringBuilder(sugarModel.getName()).append("(+₹")
+//                        .append(sugarModel.getPrice()).append(")"));
 
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-        chip_group_addon.clearCheck();
-        chip_group_addon.removeAllViews();
-
-        for (SugarModel sugarModel : Common.selectedFood.getSugar()) {
-            if (sugarModel.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
-                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_addon_item, null);
-                chip.setText(new StringBuilder(sugarModel.getName()).append("(+₹")
-                        .append(sugarModel.getPrice()).append(")"));
-
-                chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                     if (isChecked) {
-                        if (Common.selectedFood.getUserSelectedAddon() == null)
-                            Common.selectedFood.setUserSelectedAddon(new ArrayList<>());
-                        Common.selectedFood.getUserSelectedAddon().add(sugarModel);
-                    }
-                });
-
-                chip_group_addon.addView(chip);
-            }
-        }
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-    }
+//                chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//                     if (isChecked) {
+//                        if (Common.selectedFood.getUserSelectedAddon() == null)
+//                            Common.selectedFood.setUserSelectedAddon(new ArrayList<>());
+//                        Common.selectedFood.getUserSelectedAddon().add(sugarModel);
+//                    }
+//                });
+//
+//                chip_group_addon.addView(chip);
+//            }
+//        }
+//
+//    }
+//
+//    @Override
+//    public void afterTextChanged(Editable s) {
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

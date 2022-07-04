@@ -25,7 +25,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.andremion.counterfab.CounterFab;
 import com.nghiem.rilleyClient.EventBus.MenuInflateEvent;
 import com.nghiem.rilleyClient.EventBus.MenuItemEvent;
-import com.nghiem.rilleyClient.R;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -88,7 +87,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     android.app.AlertDialog dialog;
 
-    int menuClickId = -1;
+    int menuClick = -1;
 
     @BindView(R.id.fab)
     CounterFab fab;
@@ -149,6 +148,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //Hide FAB because in Restaurant list , we can't show cart
         EventBus.getDefault().postSticky(new HideFABCart(true));
         //countCartItem();
+
+        menuClick = R.id.nav_home;  //Default
+
+        checkIsOpenFromActivity();
+    }
+
+    private void checkIsOpenFromActivity() {
+        boolean isOpenFromNewOrder = getIntent().getBooleanExtra(Common.IS_OPEN_ACTIVITY_NEW_ORDER, false);
+        if (isOpenFromNewOrder) {
+            navController.popBackStack();
+            navController.navigate(R.id.nav_view_orders);
+            menuClick = R.id.nav_view_orders;
+        }
     }
 
     private void initPlacesClient() {
@@ -177,12 +189,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawers();
         switch (menuItem.getItemId()) {
             case R.id.nav_milktea:
-                if (menuItem.getItemId() != menuClickId)
+                if (menuItem.getItemId() != menuClick)
                     navController.navigate(R.id.nav_milktea);
                     EventBus.getDefault().postSticky(new MenuInflateEvent(true));
                 break;
             case R.id.nav_home:
-                if (menuItem.getItemId() != menuClickId)
+                if (menuItem.getItemId() != menuClick)
                 {
                     //Display detail menu of restaurant
                     navController.navigate(R.id.nav_home);
@@ -190,19 +202,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
             case R.id.nav_menu:
-                if (menuItem.getItemId() != menuClickId) {
+                if (menuItem.getItemId() != menuClick) {
                     navController.navigate(R.id.nav_menu);
                     EventBus.getDefault().postSticky(new MenuInflateEvent(true));
                 }
                 break;
             case R.id.nav_cart:
-                if (menuItem.getItemId() != menuClickId) {
+                if (menuItem.getItemId() != menuClick) {
                     navController.navigate(R.id.nav_cart);
                     EventBus.getDefault().postSticky(new MenuInflateEvent(true));
                 }
                 break;
             case R.id.nav_view_orders:
-                if (menuItem.getItemId() != menuClickId){
+                if (menuItem.getItemId() != menuClick){
                     navController.navigate(R.id.nav_view_orders);
                     EventBus.getDefault().postSticky(new MenuInflateEvent(true));
                 }
@@ -219,7 +231,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         }
-        menuClickId = menuItem.getItemId();
+        menuClick = menuItem.getItemId();
         return true;
     }
 
@@ -228,8 +240,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Paper.init(this);
 
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-        builder.setTitle("News System");
-        builder.setMessage("Do you want to subscribe news from our restaurant?");
+        builder.setTitle("Thông Báo");
+        builder.setMessage("Bạn có muốn đăng kí để nhận những thông báo về các mã giảm giá từ cửa hàng không?");
 
         View itemView = LayoutInflater.from(this).inflate(R.layout.layout_subscribe_news, null);
         CheckBox ckb_news = (CheckBox)itemView.findViewById(R.id.ckb_subscribe_news);
@@ -238,9 +250,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if(isSubscribeNews)
             ckb_news.setChecked(true);
 
-        builder.setNegativeButton("CANCEL", (dialogInterface, which) -> {
+        builder.setNegativeButton("Hủy", (dialogInterface, which) -> {
             dialogInterface.dismiss();
-        }).setPositiveButton("SEND", (dialogInterface, which) -> {
+        }).setPositiveButton("Gửi", (dialogInterface, which) -> {
             if(ckb_news.isChecked())
             {
                 Paper.book().write(Common.currentMilktea.getUid(), true);
@@ -277,8 +289,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void showUpdateInfoDialog() {
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-        builder.setTitle("Update Info");
-        builder.setMessage("Please fill information");
+        builder.setTitle("Cập nhật thông tin");
+        builder.setMessage("Vui lòng điền đầy đủ thông tin");
 
         View itemView = LayoutInflater.from(this).inflate(R.layout.layout_register, null);
         EditText edt_name = (EditText) itemView.findViewById(R.id.edt_name);
@@ -306,11 +318,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         edt_name.setText(Common.currentUser.getName());
         edt_address.setText(Common.currentUser.getAddress());
 
-        builder.setNegativeButton("CANCEL", (dialogInterface, which) -> dialog.dismiss());
-        builder.setPositiveButton("UPDATE", (dialogInterface, which) -> {
+        builder.setNegativeButton("Hủy", (dialogInterface, which) -> dialog.dismiss());
+        builder.setPositiveButton("Cập nhật", (dialogInterface, which) -> {
             if (placeSelected != null) {
                 if (TextUtils.isEmpty(edt_name.getText().toString())) {
-                    Toast.makeText(HomeActivity.this, "Please enter your name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, "Vui lòng nhập tên", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -330,7 +342,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         })
                         .addOnSuccessListener(aVoid -> {
                             dialogInterface.dismiss();
-                            Toast.makeText(this, "Update Info success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show();
                             Common.currentUser.setName(update_data.get("name").toString());
                             Common.currentUser.setAddress(update_data.get("address").toString());
                             Common.currentUser.setLat(Double.parseDouble(update_data.get("lat").toString()));
@@ -358,10 +370,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void signOut() {
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-        builder.setTitle("Signout");
-        builder.setMessage("Do you really want to sign out?");
+        builder.setTitle("Đăng Xuất");
+        builder.setMessage("Bạn có muốn đăng xuất không ?");
 
-        builder.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
         builder.setPositiveButton("OK", (dialog, which) -> {
             Common.selectedFood = null;
             Common.categorySelected = null;
@@ -597,7 +609,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onMenuItemBack(MenuItemBack event) {
-        menuClickId = -1;
+        menuClick = -1;
         if (getSupportFragmentManager().getBackStackEntryCount() > 0)
             getSupportFragmentManager().popBackStack();
     }

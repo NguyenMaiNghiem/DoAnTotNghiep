@@ -136,18 +136,18 @@ public class ViewOrdersFragment extends Fragment implements ILoadOrderCallbackLi
         MySwipeHelper mySwipeHelper = new MySwipeHelper(getContext(), recycler_orders, 250) {
             @Override
             public void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buf) {
-                buf.add(new MyButton(getContext(), "Cancel Order", 30, 0, Color.parseColor("#FF3C30"),
+                buf.add(new MyButton(getContext(), "Hủy đơn hàng", 30, 0, Color.parseColor("#FF3C30"),
                         pos -> {
                             OrderModel orderModel = ((MyOrdersAdapter) recycler_orders.getAdapter())
                                     .getItemAtPosition(pos);
                             if (orderModel.getOrderStatus() == 0) {
                                 androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getContext());
-                                builder.setTitle("Cancel Order")
-                                        .setMessage("Do you really want to cancel this order?")
-                                        .setNegativeButton("NO", (dialogInterface, which) -> {
+                                builder.setTitle("Hủy đơn hàng")
+                                        .setMessage("Bạn có chắc muốn hủy đơn hàng này không?")
+                                        .setNegativeButton("Không", (dialogInterface, which) -> {
                                             dialogInterface.dismiss();
                                         })
-                                        .setPositiveButton("YES", (dialog, which) -> {
+                                        .setPositiveButton("Có", (dialog, which) -> {
                                             Map<String, Object> update_data = new HashMap<>();
                                             update_data.put("orderStatus", -1); //Cancel Order
                                             FirebaseDatabase.getInstance(Common.URL)
@@ -163,7 +163,7 @@ public class ViewOrdersFragment extends Fragment implements ILoadOrderCallbackLi
                                                         orderModel.setOrderStatus(-1); //Local Update
                                                         ((MyOrdersAdapter) recycler_orders.getAdapter()).setItemAtPosition(pos, orderModel);
                                                         recycler_orders.getAdapter().notifyItemChanged(pos);
-                                                        Toast.makeText(getContext(), "Cancel order successfully!", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(getContext(), "Hủy đơn hàng thành công!", Toast.LENGTH_SHORT).show();
                                                     });
 
                                         });
@@ -171,9 +171,9 @@ public class ViewOrdersFragment extends Fragment implements ILoadOrderCallbackLi
                                 dialog.show();
 
                             } else {
-                                Toast.makeText(getContext(), new StringBuilder("Your order was changed to ")
+                                Toast.makeText(getContext(), new StringBuilder("Trạng thái đơn hàng đã được thay đổi thành ")
                                                 .append(Common.convertStatusToText(orderModel.getOrderStatus()))
-                                                .append(" , so you can't CANCEL it!")
+                                                .append(" , vì vậy bạn không thể hủy nó!")
                                         , Toast.LENGTH_SHORT).show();
                             }
                         }

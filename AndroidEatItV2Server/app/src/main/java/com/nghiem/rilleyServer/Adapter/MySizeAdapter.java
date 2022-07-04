@@ -71,7 +71,10 @@ public class MySizeAdapter extends RecyclerView.Adapter<MySizeAdapter.MyViewHold
 
     @Override
     public int getItemCount() {
-        return sizeModelList.size();
+        if (sizeModelList != null)
+            return sizeModelList.size();
+        else
+            return 0;
     }
 
     public void addNewSize(SizeModel sizeModel) {

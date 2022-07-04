@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
@@ -231,6 +233,13 @@ public class MainActivity extends AppCompatActivity {
 
 
                 userRef.child(user.getUid()).setValue(userModel)
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                dialog.dismiss();
+                                Toast.makeText(MainActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        })
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 //Successful Update of User Detail to Firebase Database
@@ -282,15 +291,15 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(MainActivity.this, HomeActivity.class));
                     finish();
 
-                }).addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-            @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                Common.currentUser = userModel; //Important, You always needs to assign this value before going to Home.
-                Common.updateNewToken(MainActivity.this, task.getResult().getToken());
-                startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                finish();
-            }
-        });
+                })
+                .addOnCompleteListener(task -> {
+                    Common.currentUser = userModel; //Important, You always needs to assign this value before going to Home.
+                    Common.updateNewToken(MainActivity.this, task.getResult().getToken());
+                    Intent intent = new Intent(this, HomeActivity.class);
+                    intent.putExtra(Common.IS_OPEN_ACTIVITY_NEW_ORDER, getIntent().getBooleanExtra(Common.IS_OPEN_ACTIVITY_NEW_ORDER, false));
+                    startActivity(intent);
+                    finish();
+                });
 
 //        FirebaseInstallations.getInstance()
 //                .getId()

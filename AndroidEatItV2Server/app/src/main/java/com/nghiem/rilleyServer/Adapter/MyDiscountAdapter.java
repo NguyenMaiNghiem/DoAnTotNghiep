@@ -42,7 +42,10 @@ public class MyDiscountAdapter extends RecyclerView.Adapter<MyDiscountAdapter.My
 
     @Override
     public int getItemCount() {
-        return discountModelList.size();
+        if (discountModelList != null)
+            return discountModelList.size();
+        else
+            return 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{

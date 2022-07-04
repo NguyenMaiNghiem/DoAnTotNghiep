@@ -53,13 +53,14 @@ public class MyOrderDetailAdapter extends RecyclerView.Adapter<MyOrderDetailAdap
                 .load(cartItemList.get(position).getFoodImage())
                 .into(holder.img_food_image); //Load default image in Cart
 
-        holder.txt_food_name.setText(new StringBuilder("Name: ")
+        holder.txt_food_name.setText(new StringBuilder("Tên: ")
                 .append(cartItemList.get(position).getFoodName()));
 
-        holder.txt_food_quantity.setText(new StringBuilder("Quantity: ")
+        holder.txt_food_quantity.setText(new StringBuilder("Số lượng: ")
                 .append(cartItemList.get(position).getFoodQuantity()));
 
-        if(!cartItemList.get(position).getFoodSize().equals("Default"))
+        //Size
+        if(!cartItemList.get(position).getFoodSize().equals("Binh thường"))
         {
             SizeModel sizeModel = gson.fromJson(cartItemList.get(position).getFoodSize(), new TypeToken<SizeModel>(){}.getType());
 
@@ -68,33 +69,49 @@ public class MyOrderDetailAdapter extends RecyclerView.Adapter<MyOrderDetailAdap
         }
         else
         {
-            holder.txt_size.setText(new StringBuilder("Size: Default"));
+            holder.txt_size.setText(new StringBuilder("Size: Binh thường"));
         }
 
-        if(!cartItemList.get(position).getFoodAddOn().equals("Default"))
+        //Sugar
+        if(!cartItemList.get(position).getFoodAddOn().equals("Binh thường"))
         {
-            List<SugarModel> sugarModels = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<List<SugarModel>>(){}.getType());
+            SugarModel sugarModel = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<SugarModel>(){}.getType());
 
-            StringBuilder addonString = new StringBuilder();
-            if(sugarModels !=null)
-            {
-                for(SugarModel sugarModel : sugarModels)
-                    addonString.append(sugarModel.getName()).append(",");
-
-                addonString.delete(addonString.length()-1, addonString.length()); //Remove "," last
-                holder.txt_food_add_on.setText(new StringBuilder("Đường: ").append(addonString));
-            }
+            if(sugarModel!=null)
+                holder.txt_food_add_on.setText(new StringBuilder("Đường: ").append(sugarModel.getName()));
         }
         else
         {
-            holder.txt_food_add_on.setText(new StringBuilder("Đường: Default"));
+            holder.txt_food_add_on.setText(new StringBuilder("Đường: Binh thường"));
         }
+
+//        if(!cartItemList.get(position).getFoodAddOn().equals("Default"))
+//        {
+//            List<SugarModel> sugarModels = gson.fromJson(cartItemList.get(position).getFoodAddOn(), new TypeToken<List<SugarModel>>(){}.getType());
+//
+//            StringBuilder addonString = new StringBuilder();
+//            if(sugarModels !=null)
+//            {
+//                for(SugarModel sugarModel : sugarModels)
+//                    addonString.append(sugarModel.getName()).append(",");
+//
+//                addonString.delete(addonString.length()-1, addonString.length()); //Remove "," last
+//                holder.txt_food_add_on.setText(new StringBuilder("Đường: ").append(addonString));
+//            }
+//        }
+//        else
+//        {
+//            holder.txt_food_add_on.setText(new StringBuilder("Đường: Default"));
+//        }
 
     }
 
     @Override
     public int getItemCount() {
-        return cartItemList.size();
+        if (cartItemList != null)
+            return cartItemList.size();
+        else
+            return 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

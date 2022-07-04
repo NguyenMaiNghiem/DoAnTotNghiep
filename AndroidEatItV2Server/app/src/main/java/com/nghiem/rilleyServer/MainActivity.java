@@ -216,4 +216,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    private void goToChatActivity() {
+        Intent intent = new Intent(this, ChatListActivity.class);
+        intent.putExtra(Common.IS_OPEN_ACTIVITY_CHAT, getIntent().getBooleanExtra(Common.IS_OPEN_ACTIVITY_CHAT, false));
+        startActivity(intent);
+        finish();
+    }
 }

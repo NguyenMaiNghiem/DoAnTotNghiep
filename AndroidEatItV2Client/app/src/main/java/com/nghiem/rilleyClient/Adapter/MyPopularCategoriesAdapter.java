@@ -59,7 +59,10 @@ public class MyPopularCategoriesAdapter extends RecyclerView.Adapter<MyPopularCa
 
     @Override
     public int getItemCount() {
-        return popularCategoryModelList.size();
+        if (popularCategoryModelList != null)
+            return popularCategoryModelList.size();
+        else
+            return 0;
     }
 
     public class MyViewHOlder extends RecyclerView.ViewHolder implements View.OnClickListener {

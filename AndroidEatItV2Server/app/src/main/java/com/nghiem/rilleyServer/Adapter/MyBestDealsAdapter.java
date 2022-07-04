@@ -52,7 +52,10 @@ public class MyBestDealsAdapter extends RecyclerView.Adapter<MyBestDealsAdapter.
 
     @Override
     public int getItemCount() {
-        return bestDealsModelList.size();
+        if (bestDealsModelList != null)
+            return bestDealsModelList.size();
+        else
+            return 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
